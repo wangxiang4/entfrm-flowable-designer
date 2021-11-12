@@ -1,0 +1,170 @@
+{
+  "id": "2934066",
+  "name": "flowable-designer",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "bpmn设计器图标",
+  "glyphs": [
+    {
+      "icon_id": "25673325",
+      "name": "execute",
+      "font_class": "execute",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "25673326",
+      "name": "task",
+      "font_class": "task",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "25673331",
+      "name": "second",
+      "font_class": "second",
+      "unicode": "e653",
+      "unicode_decimal": 58963
+    },
+    {
+      "icon_id": "25673333",
+      "name": "identity",
+      "font_class": "identity",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "25667290",
+      "name": "save",
+      "font_class": "save",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "25667291",
+      "name": "base",
+      "font_class": "base",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "25667273",
+      "name": "permission",
+      "font_class": "permission",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "25667274",
+      "name": "condition",
+      "font_class": "condition",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "25667275",
+      "name": "countersign",
+      "font_class": "countersign",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "25667276",
+      "name": "click",
+      "font_class": "click",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "25667277",
+      "name": "form",
+      "font_class": "form",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "25667278",
+      "name": "timer",
+      "font_class": "timer",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "25667279",
+      "name": "monitor",
+      "font_class": "monitor",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "25667280",
+      "name": "search-plus",
+      "font_class": "search-plus",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "25667281",
+      "name": "search-minus",
+      "font_class": "search-minus",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "25667282",
+      "name": "users",
+      "font_class": "users",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "25667283",
+      "name": "rotate-right",
+      "font_class": "rotate-right",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "25667284",
+      "name": "rotate-left",
+      "font_class": "rotate-left",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "25667285",
+      "name": "arrows",
+      "font_class": "arrows",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "25667286",
+      "name": "picture-o",
+      "font_class": "picture-o",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "25667287",
+      "name": "plus-circle",
+      "font_class": "plus-circle",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "25667288",
+      "name": "folder-open",
+      "font_class": "folder-open",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "25667289",
+      "name": "download",
+      "font_class": "download",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    }
+  ]
+}

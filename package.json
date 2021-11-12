@@ -1,0 +1,51 @@
+{
+  "name": "entfrm-flowable-designer",
+  "author": {
+    "name": "entfrm开发团队-王翔",
+    "email": "1827945911@qq.com"
+  },
+  "version": "1.0.0",
+  "main": "lib/index.umd.min.js",
+  "jsdelivr": "lib/index.umd.min.js",
+  "unpkg": "lib/index.umd.min.js",
+  "description": "entfrm商业版flowable设计器",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint ./packages",
+    "lib": "vue-cli-service build --target lib --name entfrmFlowableDesigner --dest lib --filename index --formats umd-min ./packages/index.js"
+  },
+  "dependencies": {
+    "entfrm-bpmn": "^8.6.5",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.5.12",
+    "@vue/cli-plugin-eslint": "^4.5.12",
+    "@vue/cli-service": "^4.5.12",
+    "axios": "^0.21.1",
+    "babel-eslint": "^10.1.0",
+    "core-js": "^3.11.0",
+    "element-ui": "^2.15.1",
+    "eslint": "^7.24.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "^1.32.13",
+    "sass-loader": "^10.2.0",
+    "vue": "^2.6.14",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "repository": {
+    "type": "gitee",
+    "url": "https://gitee.com/entfrm/entfrm-boot"
+  },
+  "keywords": [
+    "entfrm",
+    "entfrm-flowable",
+    "entfrm-flowable-designer"
+  ],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "license": "MIT"
+}
