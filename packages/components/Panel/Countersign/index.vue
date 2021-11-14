@@ -11,7 +11,9 @@
         </el-select>
       </el-form-item>
       <el-form-item v-show="countersign.multiInstanceType!==1" label="完成条件">
-        <el-radio-group v-model="countersign.completionConditions">
+        <el-radio-group v-model="countersign.completionConditions"
+                        @change="handleResetScale"
+        >
           <el-radio :label="1">全部通过</el-radio>
           <el-radio :label="2">按比例通过</el-radio>
         </el-radio-group>
@@ -117,6 +119,8 @@ export default {
         // 计算通过比例率
         proportionalRate: lodash.multiply(this.countersign.completionRate, 0.01)
       })
+      // 处理多位小数点时截取2位小数点
+      lodash.isSafeInteger(variable.proportionalRate) || lodash.set(variable, 'proportionalRate', variable.proportionalRate.toFixed(2))
       // 创建实例完成通过条件表达式
       const expression = this.bpmnFactory.create('bpmn:FormalExpression', { body: '${nrOfCompletedInstances/nrOfInstances >= ' + variable.proportionalRate + ' }' })
       // 创建多实例对象
@@ -147,6 +151,11 @@ export default {
           break
       }
       this.modeling.updateProperties(this.bpmnElement, bpmnXmlUpdateObj)
+    },
+    // 处理完成比例重置数据
+    handleResetScale (value) {
+      value === 1 && (this.countersign.completionRate = 100)
+      this.handleMakeXml()
     },
     // 每次bpmn元素发生变化,需要清理的脏数据
     clearDirtyData () {
