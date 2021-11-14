@@ -3,7 +3,7 @@
     <el-row style="margin: 5px;">
       <el-button type="primary"
                  size="mini"
-                 @click="listTemplateVisible = true"
+                 @click="handleButtonSelect"
       >选择按钮</el-button>
       <el-button type="primary"
                  size="mini"
@@ -32,7 +32,7 @@
     </el-table>
     <button-list-template title="选择常用按钮"
                           :visible.sync="listTemplateVisible"
-                          :select-list="getListTemplate"
+                          :select-list="selectList"
                           @save="handleListTemplateSave"
     />
     <button-add-template ref="addTemplate"
@@ -74,13 +74,8 @@ export default {
       listTemplateVisible: false,
       addTemplateVisible: false,
       form: {},
-      rowIndex: -1
-    }
-  },
-  computed: {
-    // 获取集合模板数据,模板内部标签可以设置初始勾选项
-    getListTemplate () {
-      return this.buttonList.filter(item => item.id)
+      rowIndex: -1,
+      selectList: []
     }
   },
   watch: {
@@ -124,6 +119,8 @@ export default {
     handleAddTemplateSave () {
       this.$refs.addTemplate.validate((valid) => {
         if (valid) {
+          // 去除选择模板数据,只有使用了新增模板就是新增模板的数据
+          this.form.id && delete this.form.id
           // 通过判断索引来确定是否是行内修改
           if (this.rowIndex !== -1) {
             this.buttonList.splice(this.rowIndex, 1, this.form)
@@ -178,6 +175,12 @@ export default {
       }
       this.rowIndex = -1
       this.addTemplateVisible = true
+    },
+    // 处理按钮选择
+    handleButtonSelect () {
+      // 获取集合模板数据,模板内部标签可以设置初始勾选项
+      this.selectList = this.buttonList.filter(item => item.id)
+      this.listTemplateVisible = true
     }
   }
 }
