@@ -32,7 +32,7 @@
     <listener-list-template title="选择常用监听器"
                             :query-params="queryParams"
                             :visible.sync="listTemplateVisible"
-                            :select-list="getListTemplate"
+                            :select-list="selectList"
                             @save="handleListTemplateSave"
     />
     <listener-add-template ref="addTemplate"
@@ -81,13 +81,8 @@ export default {
       addTemplateVisible: false,
       form: {},
       rowIndex: -1,
-      queryParams: {}
-    }
-  },
-  computed: {
-    // 获取集合模板数据,模板内部标签可以设置初始勾选项
-    getListTemplate () {
-      return this.taskListenerList.filter(item => item.id)
+      queryParams: {},
+      selectList: []
     }
   },
   watch: {
@@ -136,6 +131,8 @@ export default {
     handleAddTemplateSave () {
       this.$refs.addTemplate.validate((valid) => {
         if (valid) {
+          // 去除选择模板数据,只有使用了新增模板就是新增模板的数据
+          this.form.id && delete this.form.id
           // 通过判断索引来确定是否是行内修改
           if (this.rowIndex !== -1) {
             this.taskListenerList.splice(this.rowIndex, 1, this.form)
@@ -200,6 +197,8 @@ export default {
     },
     // 处理监听器选择
     handleListenerSelect () {
+      // 获取集合模板数据,模板内部标签可以设置初始勾选项
+      this.selectList = this.taskListenerList.filter(item => item.id)
       this.queryParams = {
         current: 1,
         size: 10,
