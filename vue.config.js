@@ -52,11 +52,5 @@ module.exports = {
       }
     },
     disableHostCheck: true
-  },
-
-  css: {
-    // 阅读@vue/cli-service源码发现内部使用了mini-css-extract-plugin插件做css分离
-    // 考虑方便性决定,关闭css分离插件
-    extract: false
   }
 }

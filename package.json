@@ -5,7 +5,7 @@
     "email": "1827945911@qq.com"
   },
   "version": "1.0.0",
-  "main": "lib/index.umd.min.js",
+  "main": "lib/entfrm-flowable-designer.umd.min.js",
   "jsdelivr": "lib/index.umd.min.js",
   "unpkg": "lib/index.umd.min.js",
   "description": "entfrm商业版flowable设计器",
@@ -13,7 +13,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint ./packages",
-    "lib": "vue-cli-service build --target lib --name entfrmFlowableDesigner --dest lib --filename index --formats umd-min ./packages/index.js"
+    "lib": "vue-cli-service build --target lib --name entfrm-flowable-designer --dest lib --formats umd-min packages/moddle/index.js"
   },
   "dependencies": {
     "entfrm-bpmn": "^8.6.5",
