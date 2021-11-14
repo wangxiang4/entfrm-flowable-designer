@@ -44,7 +44,8 @@
  *
  * @create: 2021-06-22
  **/
-import request from '@utils/request'
+import globalConfig from '@/common/config/global'
+import { requestDecorator } from '@utils'
 export default {
   name: 'ElTreeSelect',
   props: {
@@ -207,10 +208,10 @@ export default {
       const interval = setInterval(() => {
         this.placeholderText = this.placeholderText + '.'
       }, 500)
-      request && request({
+      requestDecorator(globalConfig.axiosInstance({
         url: this.url,
         method: 'get'
-      }).then(({ data }) => {
+      })).then(({ data }) => {
         this.valueData = data
         this.$nextTick(() => {
           this.placeholderText = this.placeholder

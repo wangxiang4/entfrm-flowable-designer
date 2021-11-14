@@ -7,12 +7,12 @@
  *
  * @create: 2021-06-03
  **/
-import request from '@utils/request'
+import globalConfig from '@/common/config/global'
 import { requestDecorator } from '@utils'
 
 // 查询角色列表
 export function listRole (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/role/list',
     method: 'get',
     params: query
@@ -21,7 +21,7 @@ export function listRole (query) {
 
 // 查询部门下拉树结构
 export function deptTree () {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/dept/deptTree',
     method: 'get'
   }))
@@ -29,7 +29,7 @@ export function deptTree () {
 
 // 查询用户列表
 export function listUser (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/user/list',
     method: 'get',
     params: query
@@ -38,7 +38,7 @@ export function listUser (query) {
 
 // 查询部门详细
 export function getDept (deptId) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/dept/' + deptId,
     method: 'get'
   }))
@@ -46,7 +46,7 @@ export function getDept (deptId) {
 
 // 查询表单管理列表
 export function listForm (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/toolkit/form/list',
     method: 'get',
     params: query
@@ -55,7 +55,7 @@ export function listForm (query) {
 
 // 查询常用按钮列表
 export function listButton (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/flowable/extension/button/list',
     method: 'get',
     params: query
@@ -64,7 +64,7 @@ export function listButton (query) {
 
 // 查询多个用户详细
 export function getUserByIds (ids) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/user/getByIds/' + ids,
     method: 'get'
   }))
@@ -72,7 +72,7 @@ export function getUserByIds (ids) {
 
 // 查询多个角色详细
 export function getRoleByIds (ids) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/system/role/getByIds/' + ids,
     method: 'get'
   }))
@@ -80,7 +80,7 @@ export function getRoleByIds (ids) {
 
 // 查询流程表达式列表
 export function listCondition (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/flowable/extension/condition/list',
     method: 'get',
     params: query
@@ -89,7 +89,7 @@ export function listCondition (query) {
 
 // 查询监听器列表
 export function listListener (query) {
-  return requestDecorator(request && request({
+  return requestDecorator(globalConfig.axiosInstance({
     url: '/flowable/extension/listener/list',
     method: 'get',
     params: query

@@ -8,6 +8,7 @@
  * @create: 2021-06-01
  **/
 import random from './random'
+import packages from './packages'
 
 /** 替换多个模板字符串 **/
 export function templateFormat (template, format) {
@@ -24,7 +25,34 @@ export function randomId8 () {
   return random(8)
 }
 
+/** 获取对象类型 **/
+export function getObjType (obj) {
+  const toString = Object.prototype.toString
+  const map = {
+    '[object Boolean]': 'boolean',
+    '[object Number]': 'number',
+    '[object String]': 'string',
+    '[object Function]': 'function',
+    '[object Array]': 'array',
+    '[object Date]': 'date',
+    '[object RegExp]': 'regExp',
+    '[object Undefined]': 'undefined',
+    '[object Null]': 'null',
+    '[object Object]': 'object',
+    '[object Promise]': 'promise'
+  }
+  if (obj instanceof Element) {
+    return 'element'
+  }
+  return map[toString.call(obj)]
+}
+
 /** 请求装饰器 **/
 export function requestDecorator (request) {
-  return typeof request === 'function' ? request : Promise.reject('没有发现第三方axios依赖,请检查')
+  // 这里具体判断是否是promise类型,预设为函数,axiosInstance为promise
+  return (request && getObjType(request) === 'promise')
+    ? request : (() => {
+      packages.logs('thirdPartyAxios')
+      return Promise.reject('没有发现第三方axios依赖,请检查')
+    })()
 }

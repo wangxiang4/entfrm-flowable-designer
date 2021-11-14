@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import axios from 'axios'
+import request from './request'
 import moddle from '@moddle'
-Vue.use(moddle, { axios: axios })
+Vue.use(moddle, { axiosInstance: request })
 
 new Vue({
   render: h => h(App)
