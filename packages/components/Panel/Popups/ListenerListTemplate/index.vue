@@ -107,13 +107,10 @@ export default {
     },
     // 处理保存动作
     save () {
-      if (lodash.isEmpty(this.tags)) this.$message.error('检查当前未勾选数据,请勾选一行')
-      else {
-        // 以防恶意重复勾选,过滤重复的标签勾选数据
-        const uniqueTags = lodash.uniqBy(this.tags, 'id')
-        this.$emit('save', uniqueTags)
-        this.closeWindow()
-      }
+      // 以防恶意重复勾选,过滤重复的标签勾选数据
+      const uniqueTags = lodash.uniqBy(this.tags, 'id')
+      this.$emit('save', uniqueTags)
+      this.closeWindow()
     },
     // 关闭窗口动作
     closeWindow () {

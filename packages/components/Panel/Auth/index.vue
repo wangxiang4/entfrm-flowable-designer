@@ -15,7 +15,7 @@
         >
           <el-button slot="append"
                      icon="el-icon-search"
-                     @click="userSelectTemplateVisible = true"
+                     @click="handleUserSelectSearch"
           />
         </el-input>
       </el-form-item>
@@ -27,7 +27,7 @@
         >
           <el-button slot="append"
                      icon="el-icon-search"
-                     @click="roleSelectTemplateVisible = true"
+                     @click="handleRoleSelectSearch"
           />
         </el-input>
       </el-form-item>
@@ -81,6 +81,8 @@ export default {
         userIds: undefined,
         userNames: ''
       },
+      userTemplateStore: [],
+      roleTemplateStore: [],
       userSelectList: [],
       roleSelectList: [],
       roleSelectTemplateVisible: false,
@@ -110,32 +112,32 @@ export default {
       if (candidateStarterUsers || candidateStarterGroups) {
         this.form = lodash.create({}, {
           starterType: 2,
-          roleIds: candidateStarterUsers,
+          roleIds: candidateStarterGroups,
           roleNames: '',
-          userIds: candidateStarterGroups,
+          userIds: candidateStarterUsers,
           userNames: ''
         })
         // 处理names赋值
         this.getList().then(() => {
-          this.$set(this.form, 'userNames', this.userSelectList.map(item => item.userName).join(','))
-          this.$set(this.form, 'roleNames', this.roleSelectList.map(item => item.name).join(','))
+          this.$set(this.form, 'userNames', this.userTemplateStore.map(item => item.userName).join(','))
+          this.$set(this.form, 'roleNames', this.roleTemplateStore.map(item => item.name).join(','))
         })
       }
     },
     // 处理角色选择模板保存
     handleRoleSelectTemplateSave (uniqueTags) {
-      this.roleSelectList = lodash.cloneDeep(uniqueTags)
+      this.roleTemplateStore = lodash.cloneDeep(uniqueTags)
       // 抽出勾选数据的name与id进行赋值
-      this.$set(this.form, 'roleIds', this.roleSelectList.map(item => item.id))
-      this.$set(this.form, 'roleNames', this.roleSelectList.map(item => item.name))
+      this.$set(this.form, 'roleIds', this.roleTemplateStore.map(item => item.id).join(','))
+      this.$set(this.form, 'roleNames', this.roleTemplateStore.map(item => item.name).join(','))
       this.handleMakeXml()
     },
     // 处理用户选择模板保存
     handleUserSelectTemplateSave (uniqueTags) {
-      this.userSelectList = lodash.cloneDeep(uniqueTags)
+      this.userTemplateStore = lodash.cloneDeep(uniqueTags)
       // 抽出勾选数据的name与id进行赋值
-      this.$set(this.form, 'userIds', this.userSelectList.map(item => item.id))
-      this.$set(this.form, 'userNames', this.userSelectList.map(item => item.userName))
+      this.$set(this.form, 'userIds', this.userTemplateStore.map(item => item.id).join(','))
+      this.$set(this.form, 'userNames', this.userTemplateStore.map(item => item.userName).join(','))
       this.handleMakeXml()
     },
     // 处理更新xml
@@ -172,13 +174,23 @@ export default {
         userNames: ''
       }
     },
+    // 处理用户选择模板搜索
+    handleUserSelectSearch () {
+      this.userSelectList = lodash.cloneDeep(this.userTemplateStore)
+      this.userSelectTemplateVisible = true
+    },
+    // 处理角色选择模板搜索
+    handleRoleSelectSearch () {
+      this.roleSelectList = lodash.cloneDeep(this.roleTemplateStore)
+      this.roleSelectTemplateVisible = true
+    },
     // 根据ID查询集合数据
     getList () {
       const axiosList = []
       this.form.userIds && axiosList.push(getUserByIds(this.form.userIds.split(','))
-        .then(response => { this.roleSelectList = lodash.get(response, 'data', []) }))
+        .then(response => { this.userTemplateStore = lodash.get(response, 'data', []) }))
       this.form.roleIds && axiosList.push(getRoleByIds(this.form.roleIds.split(','))
-        .then(response => { this.userSelectList = lodash.get(response, 'data', []) }))
+        .then(response => { this.roleTemplateStore = lodash.get(response, 'data', []) }))
       return Promise.all(axiosList)
     }
   }

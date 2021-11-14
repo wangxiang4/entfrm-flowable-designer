@@ -76,7 +76,7 @@
         </el-col>
         <el-col :span="4" :xs="24">
           <div>
-            <el-tag v-for="tag in tags" :key="tag.userName" closable>{{ tag.userName }}</el-tag>
+            <el-tag v-for="tag in tags" :key="tag.userName" closable @close="handleTagClose(tag.id)">{{ tag.userName }}</el-tag>
           </div>
         </el-col>
       </el-row>
@@ -137,7 +137,7 @@ export default {
       this.name = undefined
       this.queryParams = {
         current: 1,
-        size: 10,
+        size: 1,
         userName: undefined,
         deptId: undefined,
         status: 0
@@ -158,7 +158,7 @@ export default {
     },
     // 节点单击事件
     handleNodeClick (data) {
-      this.queryParams.deptId = data.id
+      this.queryParams.deptId = data.deptId
       this.getList()
     },
     // 查询用户集合
@@ -187,13 +187,19 @@ export default {
     },
     // 处理保存动作
     save () {
-      if (lodash.isEmpty(this.tags)) this.$message.error('检查当前未勾选数据,请勾选一行')
-      else {
-        // 以防恶意重复勾选,过滤重复的标签勾选数据
-        const uniqueTags = lodash.uniqBy(this.tags, 'id')
-        this.$emit('save', uniqueTags)
-        this.closeWindow()
-      }
+      // 以防恶意重复勾选,过滤重复的标签勾选数据
+      const uniqueTags = lodash.uniqBy(this.tags, 'id')
+      this.$emit('save', uniqueTags)
+      this.closeWindow()
+    },
+    // 处理标签关闭
+    handleTagClose (id) {
+      this.tags.splice(lodash.findIndex(e => e.id === id), 1)
+      // 自动勾选标签中已经存在的数据
+      const rows = lodash.differenceBy(this.userList, this.tags, 'id')
+      rows && rows.forEach(row => {
+        this.$refs.userTable.toggleRowSelection(row, false)
+      })
     },
     // 关闭窗口动作
     closeWindow () {

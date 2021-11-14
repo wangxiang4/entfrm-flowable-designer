@@ -53,7 +53,7 @@
         </el-col>
         <el-col :span="6" :xs="24">
           <div>
-            <el-tag v-for="tag in tags" :key="tag.name" closable>{{ tag.name }}</el-tag>
+            <el-tag v-for="tag in tags" :key="tag.name" closable @close="handleTagClose(tag.id)">{{ tag.name }}</el-tag>
           </div>
         </el-col>
       </el-row>
@@ -104,7 +104,7 @@ export default {
     init () {
       this.queryParams = {
         current: 1,
-        size: 10,
+        size: 1,
         name: undefined,
         status: 0
       }
@@ -136,17 +136,23 @@ export default {
     },
     // 处理保存动作
     save () {
-      if (lodash.isEmpty(this.tags)) this.$message.error('检查当前未勾选数据,请勾选一行')
-      else {
-        // 以防恶意重复勾选,过滤重复的标签勾选数据
-        const uniqueTags = lodash.uniqBy(this.tags, 'id')
-        this.$emit('save', uniqueTags)
-        this.closeWindow()
-      }
+      // 以防恶意重复勾选,过滤重复的标签勾选数据
+      const uniqueTags = lodash.uniqBy(this.tags, 'id')
+      this.$emit('save', uniqueTags)
+      this.closeWindow()
+    },
+    // 处理标签关闭
+    handleTagClose (id) {
+      this.tags.splice(lodash.findIndex(e => e.id === id), 1)
+      // 自动勾选标签中已经存在的数据
+      const rows = lodash.differenceBy(this.roleList, this.tags, 'id')
+      rows && rows.forEach(row => {
+        this.$refs.roleTable.toggleRowSelection(row, false)
+      })
     },
     // 关闭窗口动作
     closeWindow () {
-      this.$refs.roleTemplateDialog.hide()
+      this.$refs.roleSelectTemplateDialog.hide()
     },
     // 处理标签勾选数据
     handleTags (data) {
