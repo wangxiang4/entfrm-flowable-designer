@@ -7,11 +7,11 @@
                top="3vh"
                v-on="$listeners"
     >
-      <el-row class="m5">
+      <el-row style="margin: 5px;">
         <el-button type="primary" size="mini" @click="handleStaffAssignmentAdd()">添加</el-button>
       </el-row>
       <el-table size="mini" :data="assignList" height="400px" border>
-        <el-table-column prop="typeId" label="用户类型">
+        <el-table-column prop="typeName" label="用户类型">
           <template slot-scope="scope">
             <el-select :value="scope.row.typeId"
                        size="small"
@@ -28,19 +28,16 @@
         </el-table-column>
         <el-table-column prop="assignNames" label="用户来自">
           <template slot-scope="scope">
-            <el-input v-if="['user', 'role'].indexOf(scope.row.typeId) !== -1"
+            <el-input v-if="['user', 'role'].includes(scope.row.typeId)"
                       :readonly="true"
                       size="small"
                       placeholder="请选择"
                       :value="scope.row.assignNames"
                       class="input-with-select"
             >
-              <el-button slot="append"
-                         icon="el-icon-search"
-                         @click="handleOpenSelectTemplate(scope.row)"
-              />
+              <el-button slot="append" icon="el-icon-search" @click="handleOpenSelectTemplate(scope.row)"/>
             </el-input>
-            <tree-select v-if="['company'].indexOf(scope.row.typeId) !== -1"
+            <tree-select v-if="['company'].includes(scope.row.typeId)"
                          :props="{
                            value: 'deptId',
                            label: 'name',
@@ -55,18 +52,15 @@
                            scope.row.assignNames = valueTitle
                          }"
             />
-            <div v-if="['applyUserId', 'previousExecutor', 'currentUserId'].indexOf(scope.row.typeId) !== -1">
-              {{ handleDefinitionAssign(scope.row) }}
+            <div v-if="['applyUserId', 'previousExecutor', 'currentUserId'].includes(scope.row.typeId)">
+              {{ handleTypeDefinitionAssign(scope.row) }}
             </div>
-            <el-input v-if="['sql', 'custom'].indexOf(scope.row.typeId) !== -1"
-                      :value="scope.row.assignIds"
+            <el-input v-if="['sql', 'custom'].includes(scope.row.typeId)"
+                      v-model="scope.row.assignIds"
                       type="textarea"
                       size="small"
                       :placeholder="getMultiLineTextPlaceholder(scope.row.typeId)"
-                      @change="(text) => {
-                        scope.row.assignIds = text
-                        scope.row.assignNames = text
-                      }"
+                      @change="(text) => { scope.row.assignNames = text }"
             />
           </template>
         </el-table-column>
@@ -76,7 +70,7 @@
                       size="small"
                       :min="0"
                       type="number"
-                      @change="handleAgainSort"
+                      @change="handleAgainSort(scope.row)"
             />
           </template>
         </el-table-column>
@@ -91,7 +85,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeWindow()">取消</el-button>
-        <el-button size="small" type="primary" @click="$emit('save')">确认</el-button>
+        <el-button size="small" type="primary" @click="save()">确认</el-button>
       </div>
     </el-dialog>
     <role-select-template title="选择角色"
@@ -120,7 +114,7 @@ export default {
     TreeSelect
   },
   props: {
-    value: {
+    staffList: {
       type: Array,
       required: true
     }
@@ -170,18 +164,11 @@ export default {
     }
   },
   watch: {
-    assignList: {
-      deep: true,
-      handler (n) {
-        this.$emit('input', n)
-        this.$emit('change', n)
-      }
-    },
-    value: {
+    staffList: {
       deep: true,
       immediate: true,
-      handler () {
-        this.assignList = this.value
+      handler (val) {
+        this.assignList = lodash.cloneDeep(val)
       }
     }
   },
@@ -206,7 +193,8 @@ export default {
       this.assignList.push(staffAssignment)
     },
     // 处理排序调整时重新排序
-    handleAgainSort () {
+    handleAgainSort (row) {
+      this.$set(row, 'sort', Number(row.sort))
       this.assignList = lodash.sortBy(this.assignList, 'sort')
     },
     // 获取多行文本的提示
@@ -235,15 +223,15 @@ export default {
     // 处理用户选择模板保存
     handleUserSelectTemplateSave (uniqueTags) {
       const assign = lodash.cloneDeep(uniqueTags)
-      this.$set(this.currentRow, 'assignIds', assign.map(item => item.id))
-      this.$set(this.currentRow, 'assignNames', assign.map(item => item.userName))
+      this.$set(this.currentRow, 'assignIds', assign.map(item => item.id).join(','))
+      this.$set(this.currentRow, 'assignNames', assign.map(item => item.userName).join(','))
       this.$set(this.currentRow, 'assign', assign)
     },
     // 处理角色选择模板保存
     handleRoleSelectTemplateSave (uniqueTags) {
       const assign = lodash.cloneDeep(uniqueTags)
-      this.$set(this.currentRow, 'assignIds', assign.map(item => item.id))
-      this.$set(this.currentRow, 'assignNames', assign.map(item => item.name))
+      this.$set(this.currentRow, 'assignIds', assign.map(item => item.id).join(','))
+      this.$set(this.currentRow, 'assignNames', assign.map(item => item.name).join(','))
       this.$set(this.currentRow, 'assign', assign)
     },
     // 处理用户类型级联
@@ -256,12 +244,19 @@ export default {
       this.$set(row, 'typeId', value)
       this.$set(row, 'typeName', lodash.get(lodash.find(this.options, { 'value': value }), 'label', ''))
     },
+    // 处理保存动作
+    save () {
+      // 去除没有没有分配人员的数据
+      const staffList = lodash.filter(this.assignList, item => item.assignIds)
+      this.$emit('save', staffList)
+      this.closeWindow()
+    },
     // 关闭窗口动作
     closeWindow () {
       this.$refs.staffAssignmentsTemplateDialog.hide()
     },
-    // 处理手动定义分配数据
-    handleDefinitionAssign (row) {
+    // 处理手动用户类型定义分配数据
+    handleTypeDefinitionAssign (row) {
       // 清除分配勾选数据
       this.$set(row, 'assign', [])
       this.$set(row, 'assignIds', row.typeId)

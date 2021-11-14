@@ -3,18 +3,18 @@
     <el-row style="margin: 5px;">
       <el-button type="primary"
                  size="mini"
-                 @click="staffAssignmentsTemplateVisible=true"
+                 @click="handleStaffTemplateOpen"
       >分配人员</el-button>
     </el-row>
     <el-table size="mini" :data="assignList" border>
       <el-table-column prop="typeName" label="用户类型"/>
       <el-table-column prop="assignNames" label="用户来自"/>
     </el-table>
-    <staff-assignments-template v-model="assignList"
-                                title="节点人员设置"
+    <staff-assignments-template title="节点人员设置"
                                 ref="staffAssignments"
+                                :staff-list="staffTemplateStore"
                                 :visible.sync="staffAssignmentsTemplateVisible"
-                                @save="handleMakeXml"
+                                @save="handleStaffAssignmentsTemplateSave"
     />
   </div>
 </template>
@@ -44,6 +44,7 @@ export default {
       bpmnBusinessObject: {},
       bpmnFactory: {},
       modeling: {},
+      staffTemplateStore: [],
       assignList: [],
       staffAssignmentsTemplateVisible: false
     }
@@ -78,21 +79,41 @@ export default {
           // 保留分配勾选数据,避免过多查询,浪费系统资源
           assign: []
         })
+        const typeName = lodash.get(lodash.find(typeOptions, { 'value': item.type }), 'label', '')
         lodash.set(assign, 'typeId', item.type)
-        lodash.set(assign, 'typeName', lodash.get(lodash.find(typeOptions, { 'value': item.type }), 'label', ''))
+        lodash.set(assign, 'typeName', typeName)
         lodash.set(assign, 'assignIds', item.value)
-        lodash.set(assign, 'assignNames', item.value)
         lodash.set(assign, 'sort', item.sort)
+        switch (item.type) {
+          case 'sql':
+          case 'custom':
+            lodash.set(assign, 'assignNames', item.value)
+            break
+          case 'applyUserId':
+          case 'previousExecutor':
+          case 'currentUserId':
+            lodash.set(assign, 'assignNames', typeName)
+            break
+        }
         return assign
       })
       this.getList()
     },
+    // 处理人员分配模板保存
+    handleStaffAssignmentsTemplateSave (staffList) {
+      this.assignList = staffList
+      this.staffAssignmentsTemplateVisible = false
+      this.handleMakeXml()
+    },
+    // 处理分配模板打开
+    handleStaffTemplateOpen () {
+      this.staffTemplateStore = lodash.cloneDeep(this.assignList)
+      this.staffAssignmentsTemplateVisible = true
+    },
     // 处理制作BpmnXml并且更新
     handleMakeXml () {
-      // 去除没有没有分配人员的数据
-      const assignList = lodash.filter(this.assignList, item => item.ids)
       // 制作扩展元素->flowable:Assignee
-      const extensionAssignee = lodash.map(assignList, (item) => {
+      const extensionAssignee = lodash.map(this.assignList, (item) => {
         return this.bpmnFactory.create('flowable:Assignee', {
           type: item.typeId,
           value: item.assignIds,
@@ -109,8 +130,6 @@ export default {
       this.modeling.updateProperties(this.bpmnElement, {
         extensionElements: extensions
       })
-      // 剔除没有分配的数据
-      this.assignList = assignList
     },
     // 根据ID查询集合数据
     getList () {
