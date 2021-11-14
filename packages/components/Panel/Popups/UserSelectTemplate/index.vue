@@ -137,7 +137,7 @@ export default {
       this.name = undefined
       this.queryParams = {
         current: 1,
-        size: 1,
+        size: 10,
         userName: undefined,
         deptId: undefined,
         status: 0

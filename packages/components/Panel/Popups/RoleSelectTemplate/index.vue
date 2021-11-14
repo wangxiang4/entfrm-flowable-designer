@@ -104,7 +104,7 @@ export default {
     init () {
       this.queryParams = {
         current: 1,
-        size: 1,
+        size: 10,
         name: undefined,
         status: 0
       }
