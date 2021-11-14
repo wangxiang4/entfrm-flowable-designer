@@ -55,37 +55,41 @@ export default {
       const opt = {
         activityIds: data.activityIds || [],
         bpmnXml: data.bpmnXml || '',
-        flows: data.bpmnXml || []
+        flows: data.bpmnXml || [],
+        exclude: ['bpmndi:BPMNPlane']
       }
       // 采用bpmn内部XMl导入与XML导出模块做处理高亮处理,这里后面又重新的使用importXML导入了一次,原因不想破坏内部的生命周期回调
       opt.bpmnXml && this.viewer._moddle.fromXML(opt.bpmnXml, 'bpmn:Definitions').then(function (result) {
         const definitions = result.rootElement
-        const elements = result.elementsById
+        const references = result.references
+        // 获取Di图像元素,进行设置颜色
+        const bpmnDiElement = references.filter(e => e.property === 'bpmndi:bpmnElement')
         const runActivity = opt.activityIds.pop()
-        Object.keys(elements).forEach(key => {
+        bpmnDiElement.forEach(item => {
+          const referenceId = item.id
           // 涂抹正在运行颜色
-          if (key.includes(runActivity)) {
-            const di = elements[`${key}_di`]
-            di && Object.assign(di, {
+          if (referenceId === runActivity) {
+            const element = item.element
+            element && Object.assign(element, {
               'fill': globalConfig.runFillColor,
               'stroke': globalConfig.runStrokeColor
             })
             // 涂抹已完成颜色
-          } else if (opt.activityIds.includes(key) || opt.flows.includes(key)) {
-            const di = elements[`${key}_di`]
-            di && Object.assign(di, {
+          } else if (opt.activityIds.includes(referenceId) || opt.flows.includes(referenceId)) {
+            const element = item.element
+            element && Object.assign(element, {
               'fill': globalConfig.doneFillColor,
               'stroke': globalConfig.doneStrokeColor
             })
             // 涂抹未完成颜色
-          } else if (key.includes('_di')) {
-            const di = elements[key]
-            di && (() => {
+          } else {
+            const element = item.element
+            element && (!opt.exclude.includes(element.$type)) && (() => {
               // 不能替换xml中[bioc:stroke,bioc:stroke]手动设置颜色
               const attr = {}
-              di.fill || (attr.fill = globalConfig.undoneFillColor)
-              di.stroke || (attr.stroke = globalConfig.undoneStrokeColor)
-              Object.assign(di, attr)
+              element.fill || (attr.fill = globalConfig.undoneFillColor)
+              element.stroke || (attr.stroke = globalConfig.undoneStrokeColor)
+              Object.assign(element, attr)
             })()
           }
         })
