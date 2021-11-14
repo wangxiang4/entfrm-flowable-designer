@@ -90,6 +90,7 @@ export default {
 
 <style scoped lang="scss">
   .pagination-container {
+    overflow: auto;
     background: #fff;
     padding: 32px 16px;
   }
