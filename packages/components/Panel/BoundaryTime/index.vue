@@ -38,7 +38,7 @@ export default {
       bpmnFactory: {},
       modeling: {},
       form: {
-        timingType: 'timeDate',
+        timingType: '',
         timingValue: ''
       },
       options: [
@@ -115,13 +115,13 @@ export default {
           break
       }
       // 避免timerEventDefinition没有更新报错,并且实现更新bpmnXml
-      lodash.isEmpty(this.timerEventDefinition) || (this.timerEventDefinition = this.bpmnFactory.create('bpmn:TimerEventDefinition'))
+      lodash.isEmpty(this.timerEventDefinition) && (this.timerEventDefinition = this.bpmnFactory.create('bpmn:TimerEventDefinition'))
       this.modeling.updateModdleProperties(this.bpmnElement, this.timerEventDefinition, timerEventDefinition)
     },
     // 每次bpmn元素发生变化,需要清理的脏数据
     clearDirtyData () {
       this.form = {
-        timingType: 'timeDate',
+        timingType: '',
         timingValue: ''
       }
     }
