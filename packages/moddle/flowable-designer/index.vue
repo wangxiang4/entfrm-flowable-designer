@@ -187,7 +187,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import 'packages/assets/styles/flowable-bpmn';
-</style>

@@ -22,6 +22,7 @@ import 'entfrm-bpmn/dist/assets/bpmn-font/css/bpmn.css'
 import 'entfrm-bpmn/dist/assets/bpmn-font/css/bpmn-codes.css'
 import 'entfrm-bpmn/dist/assets/bpmn-font/css/bpmn-embedded.css'
 import '@/assets/iconfont/iconfont.css'
+import '@/assets/styles/flowable-bpmn.scss'
 
 const components = [
   flowableChart,
