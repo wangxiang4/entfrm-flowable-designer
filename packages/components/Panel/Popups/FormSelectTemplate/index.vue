@@ -9,7 +9,7 @@
     >
       <el-form label-width="90px" size="small">
         <el-form-item label="表单选择">
-          <el-select :value="formKey"
+          <el-select v-model="formKey"
                      clearable
                      placeholder="请选择"
                      style="width: 100%;"
@@ -36,13 +36,28 @@ import lodash from 'lodash'
 export default {
   name: 'FormSelectTemplate',
   props: {
+    value: {},
     options: {
-      type: Array,
-      default: () => []
-    },
+      type: Array
+    }
+  },
+  data () {
+    return {
+      formKey: undefined
+    }
+  },
+  watch: {
     formKey: {
-      type: String,
-      default: ''
+      handler (n) {
+        this.$emit('input', n)
+        this.$emit('change', n)
+      }
+    },
+    value: {
+      immediate: true,
+      handler () {
+        this.formKey = this.value
+      }
     }
   },
   methods: {

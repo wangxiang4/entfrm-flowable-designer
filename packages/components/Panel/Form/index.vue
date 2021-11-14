@@ -71,7 +71,7 @@
     <form-select-template title="选择动态表单"
                           :visible.sync="formSelectTemplateVisible"
                           :options="options"
-                          :form-key="dyFormKey"
+                          v-model="dyFormKey"
                           @save="handleSelectTemplateSave"
     />
   </div>
