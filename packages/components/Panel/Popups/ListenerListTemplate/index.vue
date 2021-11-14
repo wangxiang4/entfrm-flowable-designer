@@ -47,10 +47,10 @@ import lodash from 'lodash'
 import pagination from '@components/Pagination'
 export default {
   name: 'ListenerListTemplate',
-  inheritAttrs: false,
   components: {
     pagination
   },
+  inheritAttrs: false,
   props: {
     queryParams: {
       type: Object,

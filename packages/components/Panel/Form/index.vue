@@ -1,8 +1,8 @@
 <template>
   <div class="panel-tab-content">
-    <el-radio-group style="padding-left: 20px"
+    <el-radio-group v-model="formType"
+                    style="padding-left: 20px"
                     size="mini"
-                    v-model="formType"
                     @change="handleUpdateXml"
     >
       <el-radio label="1">动态表单</el-radio>
@@ -68,10 +68,10 @@
         </el-form-item>
       </el-form>
     </div>
-    <form-select-template title="选择动态表单"
+    <form-select-template v-model="dyFormKey"
+                          title="选择动态表单"
                           :visible.sync="formSelectTemplateVisible"
                           :options="options"
-                          v-model="dyFormKey"
                           @save="handleSelectTemplateSave"
     />
   </div>

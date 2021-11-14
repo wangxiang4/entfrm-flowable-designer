@@ -24,9 +24,9 @@
         </el-form-item>
         <el-form-item label="监听类型" prop="valueType">
           <el-radio-group v-model="form.valueType">
-            <el-radio :label="1">{{translationListenerType(1)}}</el-radio>
-            <el-radio :label="2">{{translationListenerType(2)}}</el-radio>
-            <el-radio :label="3">{{translationListenerType(3)}}</el-radio>
+            <el-radio :label="1">{{ translationListenerType(1) }}</el-radio>
+            <el-radio :label="2">{{ translationListenerType(2) }}</el-radio>
+            <el-radio :label="3">{{ translationListenerType(3) }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="translationListenerType(form.valueType)" prop="value" :rules="validateValue">

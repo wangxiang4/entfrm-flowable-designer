@@ -59,10 +59,10 @@ import lodash from 'lodash'
 import pagination from '@components/Pagination'
 export default {
   name: 'ProcessExpressionSelectTemplate',
-  inheritAttrs: false,
   components: {
     pagination
   },
+  inheritAttrs: false,
   data () {
     return {
       loading: false,

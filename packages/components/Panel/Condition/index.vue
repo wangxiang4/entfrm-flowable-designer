@@ -1,8 +1,8 @@
 <template>
   <div class="panel-tab-content">
-    <el-radio-group style="padding-left: 20px"
+    <el-radio-group v-model="conditionType"
+                    style="padding-left: 20px"
                     size="mini"
-                    v-model="conditionType"
                     @change="handleFormalExpressionBuild"
     >
       <el-radio label="1">表单字段</el-radio>

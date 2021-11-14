@@ -71,10 +71,10 @@ import lodash from 'lodash'
 import pagination from '@components/Pagination'
 export default {
   name: 'RoleSelectTemplate',
-  inheritAttrs: false,
   components: {
     pagination
   },
+  inheritAttrs: false,
   props: {
     selectList: {
       type: Array,

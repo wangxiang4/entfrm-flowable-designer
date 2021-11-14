@@ -12,7 +12,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint ./packages",
+    "lint": "vue-cli-service lint packages/moddle",
     "lib": "vue-cli-service build --target lib --name entfrm-flowable-designer --dest lib --formats umd-min packages/moddle/index.js"
   },
   "dependencies": {

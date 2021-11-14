@@ -94,10 +94,10 @@ import lodash from 'lodash'
 import pagination from '@components/Pagination'
 export default {
   name: 'UserSelectTemplate',
-  inheritAttrs: false,
   components: {
     pagination
   },
+  inheritAttrs: false,
   props: {
     selectList: {
       type: Array,

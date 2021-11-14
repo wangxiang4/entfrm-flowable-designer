@@ -10,8 +10,8 @@
       <el-table-column prop="typeName" label="用户类型"/>
       <el-table-column prop="assignNames" label="用户来自"/>
     </el-table>
-    <staff-assignments-template title="节点人员设置"
-                                ref="staffAssignments"
+    <staff-assignments-template ref="staffAssignments"
+                                title="节点人员设置"
                                 :staff-list="staffTemplateStore"
                                 :visible.sync="staffAssignmentsTemplateVisible"
                                 @save="handleStaffAssignmentsTemplateSave"
