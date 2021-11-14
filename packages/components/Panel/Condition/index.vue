@@ -3,7 +3,7 @@
     <el-radio-group style="padding-left: 20px"
                     size="mini"
                     v-model="conditionType"
-                    @change="handleUpdateXml"
+                    @change="handleFormalExpressionBuild"
     >
       <el-radio label="1">表单字段</el-radio>
       <el-radio label="2">流程表达式</el-radio>
@@ -23,7 +23,7 @@
                        size="mini"
                        placeholder="请选择"
                        @focus="handleStartNodeDynamicFormField"
-                       @change="handleUpdateXml"
+                       @change="handleFormalExpressionBuild"
             >
               <el-option v-for="item in fieldOptions"
                          :key="item.value"
@@ -37,7 +37,7 @@
           <template slot-scope="scope">
             <el-select v-model="scope.row.compare"
                        size="mini"
-                       @change="handleUpdateXml"
+                       @change="handleFormalExpressionBuild"
             >
               <el-option v-for="item in compareOptions"
                          :key="item.value"
@@ -52,7 +52,7 @@
             <el-input v-model="scope.row.value"
                       size="mini"
                       placeholder="请输入内容"
-                      @change="handleUpdateXml"
+                      @change="handleFormalExpressionBuild"
             />
           </template>
         </el-table-column>
@@ -60,7 +60,7 @@
           <template slot-scope="scope">
             <el-select v-model="scope.row.logic"
                        size="mini"
-                       @change="handleUpdateXml"
+                       @change="handleFormalExpressionBuild"
             >
               <el-option v-for="item in logicOptions"
                          :key="item.value"
@@ -214,12 +214,45 @@ export default {
     handleUpdateXml () {
       this.handleMakeXml()
     },
+    // 由于flowable工作流是需要一个表达式,所以表单字段设置后需要生成表达式
+    handleFormalExpressionBuild () {
+      const opt = {
+        conditionFormalExpression: '',
+        conditionFormalExpressionAnd: '',
+        conditionFormalExpressionOr: ''
+      }
+      // 由于且跟或同时使用需要加括号要不然会出问题
+      const conditionListLogicAnd = lodash.filter(this.conditionList, item => item.logic === 'and')
+      const conditionListLogicOr = lodash.filter(this.conditionList, item => item.logic === 'or')
+      lodash.forEach(conditionListLogicAnd, (item, index, collection) => {
+        let formalExpression = `${item.field}${item.compare}${item.value}&&`
+        // 如果是最后一个条件元素抛弃逻辑判断
+        collection.length - 1 === index && (formalExpression = `${item.field}${item.compare}${item.value}`)
+        opt.conditionFormalExpressionAnd += formalExpression
+      })
+      lodash.forEach(conditionListLogicOr, (item, index, collection) => {
+        let formalExpression = `${item.field}${item.compare}${item.value}||`
+        // 如果是最后一个条件元素抛弃逻辑判断
+        collection.length - 1 === index && (formalExpression = `${item.field}${item.compare}${item.value}`)
+        opt.conditionFormalExpressionOr += formalExpression
+      })
+      // 根据是否有那些条件去判断加不加括号
+      if (opt.conditionFormalExpressionAnd && opt.conditionFormalExpressionOr) {
+        opt.conditionFormalExpression = `(${opt.conditionFormalExpressionAnd})&&(${opt.conditionFormalExpressionOr})`
+      } else if (opt.conditionFormalExpressionAnd) {
+        opt.conditionFormalExpression = opt.conditionFormalExpressionAnd
+      } else if (opt.conditionFormalExpressionOr) {
+        opt.conditionFormalExpression = opt.conditionFormalExpressionOr
+      }
+      this.processExpression = opt.conditionFormalExpression && '${' + opt.conditionFormalExpression + '}'
+      this.handleMakeXml()
+    },
     // 处理表单字段行内删除
     handleRowDel (scope) {
       this.conditionList.splice(scope.$index, 1)
-      // 排序混乱,重新排序
+      // 重新排序(删除数据会导致递增数的据断掉的一节)
       lodash.forEach(this.conditionList, (item, index) => { this.$set(item, 'sort', index) })
-      this.handleMakeXml()
+      this.handleFormalExpressionBuild()
     },
     // 处理表单字段添加
     handleFormFieldAdd () {
@@ -233,7 +266,7 @@ export default {
       // 递增排序
       lodash.set(condition, 'sort', lodash.add(this.conditionList.length - 1, 1))
       this.conditionList.push(condition)
-      this.handleMakeXml()
+      this.handleFormalExpressionBuild()
     },
     // 处理制作BpmnXml并且更新
     handleMakeXml () {
