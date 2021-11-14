@@ -15,7 +15,12 @@ axios.defaults.validateStatus = function (status) {
 }
 
 // 创建axios实例
-const service = axios.create({ timeout: 30000 })
+const service = axios.create({
+  // axios中请求配置有baseURL选项，表示请求URL公共部分
+  baseURL: '/test',
+  // 超时
+  timeout: 30000
+})
 
 service.interceptors.response.use(res => {
   return res.data

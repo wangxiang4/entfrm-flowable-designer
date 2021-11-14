@@ -43,6 +43,14 @@ module.exports = {
     host: '0.0.0.0',
     port: 80,
     open: true,
+    // 测试请求后端Api
+    proxy: {
+      '/test': {
+        target: `http://localhost:8888`,
+        changeOrigin: true,
+        pathRewrite: { '^/test': '' }
+      }
+    },
     disableHostCheck: true
   },
 
