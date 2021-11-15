@@ -3,61 +3,61 @@
     <el-collapse value="base" accordion>
       <el-collapse-item name="base">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-identity"/>基本设置
+          <span class="iconfont icon-identity"/>基本设置
         </div>
         <base-settings :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'UserTask'" name="auditor">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-users"/>审核者
+          <span class="iconfont icon-users"/>审核者
         </div>
         <auditor :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="formValidate" name="form">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-form"/>表单设置
+          <span class="iconfont icon-form"/>表单设置
         </div>
         <form-settings :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'SequenceFlow'" name="condition">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-condition"/>流转条件
+          <span class="iconfont icon-condition"/>流转条件
         </div>
         <condition :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'UserTask'" name="button">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-click"/>按钮配置
+          <span class="iconfont icon-click"/>按钮配置
         </div>
         <button-config :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="boundaryTimeValidate" name="boundaryTime">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-second"/>边界时间属性设置
+          <span class="iconfont icon-second"/>边界时间属性设置
         </div>
         <boundary-time-settings :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item name="executionListener">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-execute"/>执行监听器
+          <span class="iconfont icon-execute"/>执行监听器
         </div>
         <execution-listener :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'UserTask'" name="taskListener">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-task"/>任务监听器
+          <span class="iconfont icon-task"/>任务监听器
         </div>
         <task-listener :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'UserTask'" name="countersign">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-countersign"/>会签设置
+          <span class="iconfont icon-countersign"/>会签设置
         </div>
         <countersign-settings :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>
       <el-collapse-item v-show="bpmnType === 'Process'" name="auth">
         <div slot="title" class="panel-tab-title">
-          <span class="icon iconfont icon-permission"/>权限设置
+          <span class="iconfont icon-permission"/>权限设置
         </div>
         <auth-settings :bpmn-element="bpmnElement" :bpmn-type="bpmnType" :modeler="modeler"/>
       </el-collapse-item>

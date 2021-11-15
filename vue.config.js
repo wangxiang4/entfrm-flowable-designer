@@ -36,7 +36,6 @@ module.exports = {
 
     config.plugin("limitChunkCountPlugin")
       .use(require("webpack").optimize.LimitChunkCountPlugin, [{ maxChunks: 1 }])
-
   },
 
   devServer: {
