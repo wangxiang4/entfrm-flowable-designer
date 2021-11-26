@@ -6,8 +6,8 @@
   },
   "version": "1.0.0",
   "main": "lib/entfrm-flowable-designer.umd.min.js",
-  "jsdelivr": "lib/index.umd.min.js",
-  "unpkg": "lib/index.umd.min.js",
+  "jsdelivr": "lib/entfrm-flowable-designer.umd.min.js",
+  "unpkg": "lib/entfrm-flowable-designer.umd.min.js",
   "description": "entfrm商业版flowable设计器",
   "scripts": {
     "serve": "vue-cli-service serve",
