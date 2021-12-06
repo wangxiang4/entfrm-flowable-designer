@@ -35,8 +35,8 @@
     "vue-template-compiler": "^2.6.14"
   },
   "repository": {
-    "type": "gitee",
-    "url": "https://gitee.com/entfrm/entfrm-boot"
+    "type": "github",
+    "url": "https://github.com/wangxiang4/entfrm-flowable-designer"
   },
   "keywords": [
     "entfrm",
