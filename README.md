@@ -34,7 +34,12 @@ npm run serve
 // or yarn run serve
 ```
 
-## 3. 演示
+## 3. 详细介绍
+>内部封装了bpmn.js建模包,
+并且对外提供全局配置跟提供三大建模组件,
+(flowable-chart,flowable-designer,flowable-preview)
+
+## 4. 演示
 
 ![img.png](public/image/sample1.png)
 <hr/>
