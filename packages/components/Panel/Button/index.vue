@@ -86,7 +86,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -106,7 +106,7 @@ export default {
         return button
       })
     },
-    // 处理集合模板保存
+    /** 处理集合模板保存 */
     handleListTemplateSave (uniqueTags) {
       // 设置默认隐藏值(0:不隐藏)
       lodash.forEach(uniqueTags, item => { item.isHide = '0' })
@@ -115,7 +115,7 @@ export default {
       this.buttonList = [...uniqueTags, ...addTemplateList]
       this.handleMakeXml()
     },
-    // 处理新增模板保存
+    /** 处理新增模板保存 */
     handleAddTemplateSave () {
       this.$refs.addTemplate.validate((valid) => {
         if (valid) {
@@ -132,7 +132,7 @@ export default {
         }
       })
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 制作扩展元素->flowable:Button
       const extensionButton = lodash.map(this.buttonList, (item) => {
@@ -154,18 +154,18 @@ export default {
         extensionElements: extensions
       })
     },
-    // 处理行内删除
+    /** 处理行内删除 */
     handleRowDel (scope) {
       this.buttonList.splice(scope.$index, 1)
       this.handleMakeXml()
     },
-    // 处理行内更新
+    /** 处理行内更新 */
     handleRowUpdate (scope) {
       this.form = { ...scope.row }
       this.rowIndex = scope.$index
       this.addTemplateVisible = true
     },
-    // 处理按钮添加
+    /** 处理按钮添加 */
     handleButtonAdd () {
       this.form = {
         name: '',
@@ -176,7 +176,7 @@ export default {
       this.rowIndex = -1
       this.addTemplateVisible = true
     },
-    // 处理按钮选择
+    /** 处理按钮选择 */
     handleButtonSelect () {
       // 获取集合模板数据,模板内部标签可以设置初始勾选项
       this.selectList = this.buttonList.filter(item => item.id)

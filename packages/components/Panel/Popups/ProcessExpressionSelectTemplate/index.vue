@@ -81,11 +81,11 @@ export default {
       }
       this.getList()
     },
-    // 处理当前选择行
+    /** 处理当前选择行 */
     handleCurrentChange (val) {
       this.currentRow = val
     },
-    // 查询流程表达式
+    /** 查询流程表达式 */
     getList () {
       this.loading = true
       listCondition(this.queryParams).then(response => {
@@ -94,16 +94,16 @@ export default {
         this.loading = false
       })
     },
-    // 处理搜索动作
+    /** 处理搜索动作 */
     handleQuery () {
       this.queryParams.current = 1
       this.getList()
     },
-    // 处理重置动作
+    /** 处理重置动作 */
     resetQuery () {
       this.$refs['queryForm'].resetFields()
     },
-    // 处理保存动作
+    /** 处理保存动作 */
     save () {
       if (lodash.isEmpty(this.currentRow)) this.$message.error('检查当前未选择数据,请选择一行')
       else {
@@ -111,7 +111,7 @@ export default {
         this.closeWindow()
       }
     },
-    // 关闭窗口动作
+    /** 关闭窗口动作 */
     closeWindow () {
       this.$refs.processExpressionSelectDialog.hide()
     }

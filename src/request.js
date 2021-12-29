@@ -6,7 +6,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-06-03
- **/
+ */
 
 import axios from 'axios'
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'

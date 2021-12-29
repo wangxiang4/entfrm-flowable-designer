@@ -2,7 +2,7 @@ const path = require('path')
 function resolve (dir) {
   return path.join(__dirname, dir)
 }
-/** 标准横幅 **/
+/** 标准横幅 */
 const package = require('./package.json')
 const banner = `${package.name} v${package.version}
 (c) 2021-${new Date().getFullYear()} entfrm开发团队-王翔

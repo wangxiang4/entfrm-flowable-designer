@@ -15,7 +15,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-10-18
- **/
+ */
 
 export default function (length = 32) {
   const numbers = '0123456789'
@@ -37,7 +37,7 @@ export default function (length = 32) {
   return randomString
 }
 
-/** 安全随机字节(确保一定可以获取到crypto生成的随机字节数组) **/
+/** 安全随机字节(确保一定可以获取到crypto生成的随机字节数组) */
 function safeRandomBytes (length) {
   const randomBytes = require('crypto').randomBytes
   // eslint-disable-next-line no-constant-condition
@@ -50,7 +50,7 @@ function safeRandomBytes (length) {
   }
 }
 
-/** 进程字符串(根据随机字节匹配定义的匹配字符进行生成随机字符串) **/
+/** 进程字符串(根据随机字节匹配定义的匹配字符进行生成随机字符串) */
 function processString (buf, randomString, matchChars, length, maxByte) {
   let string = randomString
   for (let i = 0; i < buf.length && string.length < length; i++) {

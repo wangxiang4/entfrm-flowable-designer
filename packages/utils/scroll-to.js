@@ -6,7 +6,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-06-10
- **/
+ */
 
 Math.easeInOutQuad = function (t, b, c, d) {
   t /= d / 2
@@ -17,7 +17,7 @@ Math.easeInOutQuad = function (t, b, c, d) {
   return -c / 2 * (t * (t - 2) - 1) + b
 }
 
-/** 用于智能动画的 requestAnimationFrame http://goo.gl/sx5sts **/
+/** 用于智能动画的 requestAnimationFrame http://goo.gl/sx5sts */
 const requestAnimFrame = (function () {
   return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) { window.setTimeout(callback, 1000 / 60) }
 })()
@@ -32,7 +32,7 @@ function move (amount) {
   document.body.scrollTop = amount
 }
 
-/** 当前滚动位置 **/
+/** 当前滚动位置 */
 function position () {
   return document.documentElement.scrollTop || document.body.parentNode.scrollTop || document.body.scrollTop
 }

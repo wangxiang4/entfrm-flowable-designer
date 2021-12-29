@@ -93,7 +93,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -120,14 +120,14 @@ export default {
         return listener
       })
     },
-    // 处理集合模板保存
+    /** 处理集合模板保存 */
     handleListTemplateSave (uniqueTags) {
       // 不能直接覆盖使用新增模板添加的数据,需要进行合并
       const addTemplateList = this.taskListenerList.filter(item => !item.id)
       this.taskListenerList = [...uniqueTags, ...addTemplateList]
       this.handleMakeXml()
     },
-    // 处理新增模板保存
+    /** 处理新增模板保存 */
     handleAddTemplateSave () {
       this.$refs.addTemplate.validate((valid) => {
         if (valid) {
@@ -144,7 +144,7 @@ export default {
         }
       })
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 制作扩展元素->flowable:TaskListener
       const extensionTaskListener = lodash.map(this.taskListenerList, (item) => {
@@ -174,18 +174,18 @@ export default {
         extensionElements: extensions
       })
     },
-    // 处理行内删除
+    /** 处理行内删除 */
     handleRowDel (scope) {
       this.taskListenerList.splice(scope.$index, 1)
       this.handleMakeXml()
     },
-    // 处理行内更新
+    /** 处理行内更新 */
     handleRowUpdate (scope) {
       this.form = { ...scope.row }
       this.rowIndex = scope.$index
       this.addTemplateVisible = true
     },
-    // 处理监听器添加
+    /** 处理监听器添加 */
     handleListenerAdd () {
       this.form = {
         event: '',
@@ -195,7 +195,7 @@ export default {
       this.rowIndex = -1
       this.addTemplateVisible = true
     },
-    // 处理监听器选择
+    /** 处理监听器选择 */
     handleListenerSelect () {
       // 获取集合模板数据,模板内部标签可以设置初始勾选项
       this.selectList = this.taskListenerList.filter(item => item.id)

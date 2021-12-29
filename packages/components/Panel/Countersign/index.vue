@@ -82,7 +82,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -106,11 +106,11 @@ export default {
         this.$set(this.countersign, 'completionRate', proportionalRate)
       }
     },
-    // 处理更新xml
+    /** 处理更新xml */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 多实例变量定义
       const variable = lodash.create({}, {
@@ -152,12 +152,12 @@ export default {
       }
       this.modeling.updateProperties(this.bpmnElement, bpmnXmlUpdateObj)
     },
-    // 处理完成比例重置数据
+    /** 处理完成比例重置数据 */
     handleResetScale (value) {
       value === 1 && (this.countersign.completionRate = 100)
       this.handleMakeXml()
     },
-    // 每次bpmn元素发生变化,需要清理的脏数据
+    /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {
       this.countersign = {
         multiInstanceType: 1,

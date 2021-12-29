@@ -100,7 +100,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -124,7 +124,7 @@ export default {
         })
       }
     },
-    // 处理角色选择模板保存
+    /** 处理角色选择模板保存 */
     handleRoleSelectTemplateSave (uniqueTags) {
       this.roleTemplateStore = lodash.cloneDeep(uniqueTags)
       // 抽出勾选数据的name与id进行赋值
@@ -132,7 +132,7 @@ export default {
       this.$set(this.form, 'roleNames', this.roleTemplateStore.map(item => item.name).join(','))
       this.handleMakeXml()
     },
-    // 处理用户选择模板保存
+    /** 处理用户选择模板保存 */
     handleUserSelectTemplateSave (uniqueTags) {
       this.userTemplateStore = lodash.cloneDeep(uniqueTags)
       // 抽出勾选数据的name与id进行赋值
@@ -140,11 +140,11 @@ export default {
       this.$set(this.form, 'userNames', this.userTemplateStore.map(item => item.userName).join(','))
       this.handleMakeXml()
     },
-    // 处理更新xml
+    /** 处理更新xml */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 创建bpmn业务元素属性对象,实现更新bpmnXml
       const bpmnBusinessAttr = lodash.create({})
@@ -162,7 +162,7 @@ export default {
       }
       this.modeling.updateProperties(this.bpmnElement, bpmnBusinessAttr)
     },
-    // 每次bpmn元素发生变化,需要清理的脏数据
+    /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {
       this.form = {
         starterType: 1,
@@ -174,17 +174,17 @@ export default {
         userNames: ''
       }
     },
-    // 处理用户选择模板搜索
+    /** 处理用户选择模板搜索 */
     handleUserSelectSearch () {
       this.userSelectList = lodash.cloneDeep(this.userTemplateStore)
       this.userSelectTemplateVisible = true
     },
-    // 处理角色选择模板搜索
+    /** 处理角色选择模板搜索 */
     handleRoleSelectSearch () {
       this.roleSelectList = lodash.cloneDeep(this.roleTemplateStore)
       this.roleSelectTemplateVisible = true
     },
-    // 根据ID查询集合数据
+    /** 根据ID查询集合数据 */
     getList () {
       const axiosList = []
       this.form.userIds && axiosList.push(getUserByIds(this.form.userIds.split(','))

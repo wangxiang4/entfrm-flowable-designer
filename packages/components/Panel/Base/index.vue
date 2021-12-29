@@ -59,7 +59,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -69,11 +69,11 @@ export default {
       this.$set(this.form, 'name', this.bpmnBusinessObject.name)
       this.$set(this.form, 'documentation', lodash.get(this.bpmnBusinessObject, 'documentation[0].text', ''))
     },
-    // 处理更新xml
+    /** 处理更新xml */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 创建bpmn业务元素属性对象,这里可以不需要关心id是否重复非空(查看了内部源码发现内部已经做了处理)
       const bpmnBusinessAttr = lodash.create({})

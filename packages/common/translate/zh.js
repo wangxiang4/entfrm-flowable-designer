@@ -7,7 +7,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-05-31
- **/
+*/
 
 export default {
   'Activate the global connect tool': '启动全局连接工具',

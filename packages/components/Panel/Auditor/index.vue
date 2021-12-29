@@ -57,7 +57,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -99,18 +99,18 @@ export default {
       })
       this.getList()
     },
-    // 处理人员分配模板保存
+    /** 处理人员分配模板保存 */
     handleStaffAssignmentsTemplateSave (staffList) {
       this.assignList = staffList
       this.staffAssignmentsTemplateVisible = false
       this.handleMakeXml()
     },
-    // 处理分配模板打开
+    /** 处理分配模板打开 */
     handleStaffTemplateOpen () {
       this.staffTemplateStore = lodash.cloneDeep(this.assignList)
       this.staffAssignmentsTemplateVisible = true
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 制作扩展元素->flowable:Assignee
       const extensionAssignee = lodash.map(this.assignList, (item) => {
@@ -131,7 +131,7 @@ export default {
         extensionElements: extensions
       })
     },
-    // 根据ID查询集合数据
+    /** 根据ID查询集合数据 */
     getList () {
       const axiosList = []
       lodash.forEach(this.assignList, item => {

@@ -6,11 +6,11 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-06-01
- **/
+ */
 import random from './random'
 import packages from './packages'
 
-/** 替换多个模板字符串 **/
+/** 替换多个模板字符串 */
 export function templateFormat (template, format) {
   if (Object.keys(format).length === 0) {
     return template
@@ -20,12 +20,12 @@ export function templateFormat (template, format) {
   })
 }
 
-/** 生成随机8位ID **/
+/** 生成随机8位ID */
 export function randomId8 () {
   return random(8)
 }
 
-/** 获取对象类型 **/
+/** 获取对象类型 */
 export function getObjType (obj) {
   const toString = Object.prototype.toString
   const map = {
@@ -47,7 +47,7 @@ export function getObjType (obj) {
   return map[toString.call(obj)]
 }
 
-/** 请求装饰器 **/
+/** 请求装饰器 */
 export function requestDecorator (request) {
   // 这里具体判断是否是promise类型,预设为函数,axiosInstance为promise
   return (request && getObjType(request) === 'promise')

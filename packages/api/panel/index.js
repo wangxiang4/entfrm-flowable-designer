@@ -6,7 +6,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-06-03
- **/
+*/
 import globalConfig from '@/common/config/global'
 import { requestDecorator } from '@utils'
 

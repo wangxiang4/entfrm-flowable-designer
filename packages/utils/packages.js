@@ -6,7 +6,7 @@
  * @author: entfrm开发团队-王翔
  *
  * @create: 2021-07-15
- **/
+ */
 
 import $Log from './log'
 const list = {

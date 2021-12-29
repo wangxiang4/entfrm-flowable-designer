@@ -66,7 +66,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -89,11 +89,11 @@ export default {
         }
       }
     },
-    // 处理更新xml
+    /** 处理更新xml */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 创建定时器事件定义
       const timerEventDefinition = lodash.create({}, {
@@ -118,7 +118,7 @@ export default {
       lodash.isEmpty(this.timerEventDefinition) && (this.timerEventDefinition = this.bpmnFactory.create('bpmn:TimerEventDefinition'))
       this.modeling.updateModdleProperties(this.bpmnElement, this.timerEventDefinition, timerEventDefinition)
     },
-    // 每次bpmn元素发生变化,需要清理的脏数据
+    /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {
       this.form = {
         timingType: '',

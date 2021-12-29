@@ -173,7 +173,7 @@ export default {
     }
   },
   methods: {
-    // 处理人员分配添加
+    /** 处理人员分配添加 */
     handleStaffAssignmentAdd () {
       const staffAssignment = lodash.create({}, {
         // 分配类型
@@ -192,12 +192,12 @@ export default {
       lodash.set(staffAssignment, 'sort', lodash.add(increase, 10))
       this.assignList.push(staffAssignment)
     },
-    // 处理排序调整时重新排序
+    /** 处理排序调整时重新排序 */
     handleAgainSort (row) {
       this.$set(row, 'sort', Number(row.sort))
       this.assignList = lodash.sortBy(this.assignList, 'sort')
     },
-    // 获取多行文本的提示
+    /** 获取多行文本的提示 */
     getMultiLineTextPlaceholder (type) {
       switch (type) {
         case 'sql':
@@ -206,7 +206,7 @@ export default {
           return '请输入自定义扩展标记值,你可以根据该标记,在Java中解析你需要的审核人员信息'
       }
     },
-    // 处理打开选择模板
+    /** 处理打开选择模板 */
     handleOpenSelectTemplate (row) {
       this.currentRow = row
       switch (row.typeId) {
@@ -220,21 +220,21 @@ export default {
           break
       }
     },
-    // 处理用户选择模板保存
+    /** 处理用户选择模板保存 */
     handleUserSelectTemplateSave (uniqueTags) {
       const assign = lodash.cloneDeep(uniqueTags)
       this.$set(this.currentRow, 'assignIds', assign.map(item => item.id).join(','))
       this.$set(this.currentRow, 'assignNames', assign.map(item => item.userName).join(','))
       this.$set(this.currentRow, 'assign', assign)
     },
-    // 处理角色选择模板保存
+    /** 处理角色选择模板保存 */
     handleRoleSelectTemplateSave (uniqueTags) {
       const assign = lodash.cloneDeep(uniqueTags)
       this.$set(this.currentRow, 'assignIds', assign.map(item => item.id).join(','))
       this.$set(this.currentRow, 'assignNames', assign.map(item => item.name).join(','))
       this.$set(this.currentRow, 'assign', assign)
     },
-    // 处理用户类型级联
+    /** 处理用户类型级联 */
     handleTypeCascade (value, row) {
       // 清除人员分配
       this.$set(row, 'assignIds', '')
@@ -244,18 +244,18 @@ export default {
       this.$set(row, 'typeId', value)
       this.$set(row, 'typeName', lodash.get(lodash.find(this.options, { 'value': value }), 'label', ''))
     },
-    // 处理保存动作
+    /** 处理保存动作 */
     save () {
       // 去除没有没有分配人员的数据
       const staffList = lodash.filter(this.assignList, item => item.assignIds)
       this.$emit('save', staffList)
       this.closeWindow()
     },
-    // 关闭窗口动作
+    /** 关闭窗口动作 */
     closeWindow () {
       this.$refs.staffAssignmentsTemplateDialog.hide()
     },
-    // 处理手动用户类型定义分配数据
+    /** 处理手动用户类型定义分配数据 */
     handleTypeDefinitionAssign (row) {
       // 清除分配勾选数据
       this.$set(row, 'assign', [])

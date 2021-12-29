@@ -170,7 +170,7 @@ export default {
     }
   },
   methods: {
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -191,7 +191,7 @@ export default {
         return condition
       })
     },
-    // 查询开始节点动态表单字段,可以拿启动时存储在flowable流程中的字段做流转判断
+    /** 查询开始节点动态表单字段,可以拿启动时存储在flowable流程中的字段做流转判断 */
     handleStartNodeDynamicFormField () {
       // 获取根流程对象,注意必须要是根流程要不然多级子流程会出问题
       const rootBusinessObject = this.modeler.get('canvas').getRootElement().businessObject
@@ -205,16 +205,16 @@ export default {
         this.fieldOptions = formPropertyExtension.map(item => Object({ label: item.name, value: item.id }))
       }
     },
-    // 处理选择模板保存
+    /** 处理选择模板保存 */
     handleSelectTemplateSave (processExpression) {
       this.processExpression = processExpression
       this.handleMakeXml()
     },
-    // 处理更新xml数据
+    /** 处理更新xml数据 */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 由于flowable工作流是需要一个表达式,所以表单字段设置后需要生成表达式
+    /** 由于flowable工作流是需要一个表达式,所以表单字段设置后需要生成表达式 */
     handleFormalExpressionBuild () {
       const opt = {
         conditionFormalExpression: '',
@@ -247,14 +247,14 @@ export default {
       this.processExpression = opt.conditionFormalExpression && '${' + opt.conditionFormalExpression + '}'
       this.handleMakeXml()
     },
-    // 处理表单字段行内删除
+    /** 处理表单字段行内删除 */
     handleRowDel (scope) {
       this.conditionList.splice(scope.$index, 1)
       // 重新排序(删除数据会导致递增数的据断掉的一节)
       lodash.forEach(this.conditionList, (item, index) => { this.$set(item, 'sort', index) })
       this.handleFormalExpressionBuild()
     },
-    // 处理表单字段添加
+    /** 处理表单字段添加 */
     handleFormFieldAdd () {
       const condition = lodash.create({}, {
         field: '',
@@ -268,7 +268,7 @@ export default {
       this.conditionList.push(condition)
       this.handleFormalExpressionBuild()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       // 制作扩展元素->flowable:Condition
       const extensionCondition = lodash.map(this.conditionList, (item) => {

@@ -90,7 +90,7 @@ export default {
     }
   },
   methods: {
-    // 查询常用监听器集合
+    /** 查询常用监听器集合 */
     getList () {
       this.loading = true
       listListener(this.params).then(response => {
@@ -105,18 +105,18 @@ export default {
         })
       })
     },
-    // 处理保存动作
+    /** 处理保存动作 */
     save () {
       // 以防恶意重复勾选,过滤重复的标签勾选数据
       const uniqueTags = lodash.uniqBy(this.tags, 'id')
       this.$emit('save', uniqueTags)
       this.closeWindow()
     },
-    // 关闭窗口动作
+    /** 关闭窗口动作 */
     closeWindow () {
       this.$refs.listenerListDialog.hide()
     },
-    // 处理标签勾选数据
+    /** 处理标签勾选数据 */
     handleTags (data) {
       if (data.length === 0) {
         // 如果当前选择为空则匹配删除当前页所有数据,不影响其他页

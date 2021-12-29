@@ -100,7 +100,7 @@ export default {
     }
   },
   methods: {
-    // 外部调用保存验证方法
+    /** 外部调用保存验证方法 */
     validate (callback) {
       this.$refs.form.validate((valid, msg) => {
         if (valid) {
@@ -110,7 +110,7 @@ export default {
         }
       })
     },
-    // 关闭窗口动作
+    /** 关闭窗口动作 */
     closeWindow () {
       this.$refs.buttonAddTemplateDialog.hide()
     }

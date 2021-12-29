@@ -129,13 +129,13 @@ export default {
     this.getListForm()
   },
   methods: {
-    // 初始化获取动态表单
+    /** 初始化获取动态表单 */
     getListForm () {
       listForm(this.queryParams).then(response => {
         this.options = response.data
       })
     },
-    // 当选择的bpmn元素发生变化,刷新数据
+    /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
@@ -168,7 +168,7 @@ export default {
         this.formList = [dyForm]
       }
     },
-    // 处理选择模板保存
+    /** 处理选择模板保存 */
     handleSelectTemplateSave (form) {
       const dyForm = lodash.create({})
       lodash.set(dyForm, 'name', form.name)
@@ -187,7 +187,7 @@ export default {
       this.formList = [dyForm]
       this.handleMakeXml()
     },
-    // 处理制作BpmnXml并且更新
+    /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
       const formKey = this.formType === '1'
         ? lodash.get(this.formList[0], 'formKey', '')
@@ -218,16 +218,16 @@ export default {
       setLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey', lodash.get(this.formList[0], 'formKey', ''))
       setLocalStorage(this.bpmnBusinessObject.id + 'outFormKey', lodash.get(this.outForm, 'formKey', ''))
     },
-    // 处理更新xml
+    /** 处理更新xml */
     handleUpdateXml () {
       this.handleMakeXml()
     },
-    // 处理动态表单更新
+    /** 处理动态表单更新 */
     handleUpdateForm () {
       this.dyFormKey = lodash.get(this.formList[0], 'formKey', '')
       this.formSelectTemplateVisible = true
     },
-    // 处理动态表单删除
+    /** 处理动态表单删除 */
     handleDeleteDyForm () {
       this.$confirm('确定删除动态表单吗?', '警告', {
         confirmButtonText: '确定',
@@ -238,7 +238,7 @@ export default {
         this.handleMakeXml()
       }).catch(function () {})
     },
-    // 每次bpmn元素发生变化,需要清理的脏数据
+    /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {
       this.formList = []
     }

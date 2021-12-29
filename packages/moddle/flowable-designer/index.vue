@@ -64,7 +64,7 @@ export default {
     this.init()
   },
   methods: {
-    // 初始化加载BpmnModeler
+    /** 初始化加载BpmnModeler */
     init () {
       const _moddleExtensions = this.getModdleExtensions()
       const _additionalModules = this.getAdditionalModules()
@@ -78,7 +78,7 @@ export default {
       this.importDiagram(this.bpmnXml || templateXml.initTemplate())
       this.initModelListeners()
     },
-    // 初始化监听事件
+    /** 初始化监听事件 */
     initModelListeners () {
       const EventBus = this.bpmnModeler.get('eventBus')
       EventBus.on('commandStack.changed', () => {
@@ -96,23 +96,23 @@ export default {
         this.defaultZoom = Math.ceil(scale * 100) / 100
       })
     },
-    // 获取modeler附加模板(覆盖modeler内部已经存在的模块,也称重新附加模块)
+    /** 获取modeler附加模板(覆盖modeler内部已经存在的模块,也称重新附加模块) */
     getAdditionalModules () {
       return [{ translate: ['value', customTranslate] }]
     },
-    // 获取modeler扩展模板(新加入到modeler中的扩展模块,可以通过ioc调用,例如this.bpmnModeler.get(...))
+    /** 获取modeler扩展模板(新加入到modeler中的扩展模块,可以通过ioc调用,例如this.bpmnModeler.get(...)) */
     getModdleExtensions () {
       return { flowable: flowableDescriptor }
     },
-    // 导入bpmnXml文件
+    /** 导入bpmnXml文件 */
     importDiagram (xml) {
       this.bpmnModeler.importXML(xml).catch(() => this.$message.error('打开模型出错,请确认该模型符合Bpmn2.0规范'))
     },
-    // 创建新的流程图
+    /** 创建新的流程图 */
     restart () {
       this.importDiagram(templateXml.initTemplate())
     },
-    // 导出diagram.bpmn文件
+    /** 导出diagram.bpmn文件 */
     handleExportBpmn () {
       this.bpmnModeler.saveXML({
         format: true
@@ -127,7 +127,7 @@ export default {
         }
       })
     },
-    // 导出diagram.svg文件
+    /** 导出diagram.svg文件 */
     handleExportSvg () {
       this.bpmnModeler.saveSVG().then(result => {
         const { filename, href } = this.setEncoded('SVG', result.svg)
@@ -140,7 +140,7 @@ export default {
         }
       })
     },
-    // 设置导出格式编码
+    /** 设置导出格式编码 */
     setEncoded (type, data) {
       const encodedData = encodeURIComponent(data)
       if (data) {
@@ -167,19 +167,19 @@ export default {
         }
       }
     },
-    // 处理画布缩小
+    /** 处理画布缩小 */
     handleProcessZoomOut (zoomStep) {
       const newZoom = Math.ceil(this.defaultZoom * 100 - zoomStep * 100) / 100
       this.defaultZoom = newZoom.toFixed(1)
       this.bpmnModeler.get('canvas').zoom(this.defaultZoom)
     },
-    // 处理画布放大
+    /** 处理画布放大 */
     handleProcessZoomIn (zoomStep) {
       const newZoom = Math.ceil(this.defaultZoom * 100 + zoomStep * 100) / 100
       this.defaultZoom = newZoom.toFixed(1)
       this.bpmnModeler.get('canvas').zoom(this.defaultZoom)
     },
-    // 处理画布重置
+    /** 处理画布重置 */
     handleProcessReZoom () {
       this.defaultZoom = 1
       this.bpmnModeler.get('canvas').zoom('fit-viewport', 'auto')

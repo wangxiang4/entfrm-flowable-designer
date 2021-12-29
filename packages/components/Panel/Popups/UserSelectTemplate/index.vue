@@ -145,23 +145,23 @@ export default {
       this.getList()
       this.getDeptTree()
     },
-    // 查询机构名称下拉树结构
+    /** 查询机构名称下拉树结构 */
     getDeptTree () {
       deptTree().then(response => {
         this.deptOptions = response.data
       })
     },
-    // 筛选节点
+    /** 筛选节点 */
     filterNode (value, data) {
       if (!value) return true
       return data.name.indexOf(value) !== -1
     },
-    // 节点单击事件
+    /** 节点单击事件 */
     handleNodeClick (data) {
       this.queryParams.deptId = data.deptId
       this.getList()
     },
-    // 查询用户集合
+    /** 查询用户集合 */
     getList () {
       this.loading = true
       listUser(this.queryParams).then(response => {
@@ -176,23 +176,23 @@ export default {
         })
       })
     },
-    // 处理搜索动作
+    /** 处理搜索动作 */
     handleQuery () {
       this.queryParams.current = 1
       this.getList()
     },
-    // 处理重置动作
+    /** 处理重置动作 */
     resetQuery () {
       this.$refs['queryForm'].resetFields()
     },
-    // 处理保存动作
+    /** 处理保存动作 */
     save () {
       // 以防恶意重复勾选,过滤重复的标签勾选数据
       const uniqueTags = lodash.uniqBy(this.tags, 'id')
       this.$emit('save', uniqueTags)
       this.closeWindow()
     },
-    // 处理标签关闭
+    /** 处理标签关闭 */
     handleTagClose (id) {
       this.tags.splice(lodash.findIndex(e => e.id === id), 1)
       // 自动勾选标签中已经存在的数据
@@ -201,11 +201,11 @@ export default {
         this.$refs.userTable.toggleRowSelection(row, false)
       })
     },
-    // 关闭窗口动作
+    /** 关闭窗口动作 */
     closeWindow () {
       this.$refs.userSelectTemplateDialog.hide()
     },
-    // 处理标签数据
+    /** 处理标签数据 */
     handleTags (data) {
       if (data.length === 0) {
         // 如果当前选择为空则匹配删除当前页所有数据,不影响其他页

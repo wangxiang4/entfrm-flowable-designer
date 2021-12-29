@@ -42,13 +42,13 @@ export default {
     this.init()
   },
   methods: {
-    // 初始化加载NavigatedViewer
+    /** 初始化加载NavigatedViewer */
     init () {
       this.canvas = this.$refs.bpmnViewer
       this.navigatedViewer = new NavigatedViewer({ container: this.canvas })
       this.handleHighlightImportDiagram(this.options)
     },
-    // 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件
+    /** 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件 */
     handleHighlightImportDiagram (data = {}) {
       const opt = {
         activityIds: data.activityIds || [],
