@@ -15,7 +15,7 @@
                :show-checkbox="showCheckbox"
                :props="config"
                highlight-current
-               :node-key="config.id"
+               :node-key="config.value"
                :default-expanded-keys="defaultExpandedKey"
                @check-change="handleCheckChange"
                @node-click="handleNodeClick"
@@ -139,7 +139,7 @@ export default {
       let TreeData = []
       if (this.list) {
         // 集合结构转树形结构
-        const id = this.config.id
+        const id = this.config.value
         const parentId = this.config.parentId
         const children = this.config.children
         const rootId = this.config.rootId || Math.min.apply(Math, this.list.map(item => { return item[parentId] })) || 0
@@ -168,7 +168,7 @@ export default {
     config () {
       return Object.assign({
         // ID字段名
-        id: 'id',
+        value: 'id',
         // 显示名称
         label: 'label',
         // 子级字段名
@@ -232,7 +232,7 @@ export default {
           const titles = []
           ids.forEach((id) => {
             this.treeList.forEach((d) => {
-              if (id === d[this.config.id]) {
+              if (id === d[this.config.value]) {
                 titles.push(d[this.config.label])
               }
             })
@@ -274,7 +274,7 @@ export default {
         return
       }
       this.valueTitle = node[this.config.label]
-      this.valueId = node[this.config.id]
+      this.valueId = node[this.config.value]
       this.$emit('getValue', this.valueId, this.valueTitle, node)
       this.$refs.elSelect.visible = false
     },
@@ -285,7 +285,7 @@ export default {
         return node[this.config.label]
       }).join(',')
       this.valueId = nodes.map((node) => {
-        return node[this.config.id]
+        return node[this.config.value]
       }).join(',')
       this.$emit('getValue', this.valueId, this.valueTitle)
     },
