@@ -2,7 +2,6 @@
   <div>
     <el-dialog ref="processExpressionSelectDialog"
                v-bind="$attrs"
-               width="650px"
                top="3vh"
                :append-to-body="true"
                :modal-append-to-body="false"
@@ -33,6 +32,7 @@
       </el-form>
       <el-table v-loading="loading"
                 size="small"
+                height="calc(100vh - 400px)"
                 :data="expressionList"
                 highlight-current-row
                 @current-change="handleCurrentChange"

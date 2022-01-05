@@ -2,7 +2,6 @@
   <div>
     <el-dialog ref="userSelectTemplateDialog"
                v-bind="$attrs"
-               width="900px"
                top="3vh"
                :append-to-body="true"
                :modal-append-to-body="false"
@@ -58,8 +57,8 @@
           <el-table ref="userTable"
                     v-loading="loading"
                     size="small"
+                    height="calc(100vh - 430px)"
                     :data="userList"
-                    height="330px"
                     @select="handleTags"
                     @select-all="handleTags"
           >

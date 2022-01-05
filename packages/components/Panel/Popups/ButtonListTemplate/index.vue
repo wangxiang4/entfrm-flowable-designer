@@ -2,7 +2,6 @@
   <div>
     <el-dialog ref="buttonListTemplateDialog"
                v-bind="$attrs"
-               width="650px"
                top="3vh"
                :append-to-body="true"
                :modal-append-to-body="false"
@@ -13,8 +12,8 @@
       <el-table ref="buttonTable"
                 v-loading="loading"
                 size="small"
+                height="calc(100vh - 363px)"
                 :data="buttonList"
-                height="330px"
                 @select="handleTags"
                 @select-all="handleTags"
       >

@@ -5,14 +5,13 @@
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
-               width="950px"
                top="3vh"
                v-on="$listeners"
     >
       <el-row style="margin: 5px;">
         <el-button type="primary" size="mini" @click="handleStaffAssignmentAdd()">添加</el-button>
       </el-row>
-      <el-table size="mini" :data="assignList" height="400px" border>
+      <el-table size="mini" :data="assignList" height="calc(100vh - 300px)" border>
         <el-table-column prop="typeName" label="用户类型">
           <template slot-scope="scope">
             <el-select :value="scope.row.typeId"

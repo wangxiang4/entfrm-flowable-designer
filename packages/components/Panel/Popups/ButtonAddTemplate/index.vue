@@ -2,7 +2,6 @@
   <div>
     <el-dialog ref="buttonAddTemplateDialog"
                v-bind="$attrs"
-               width="700px"
                top="3vh"
                :append-to-body="true"
                :modal-append-to-body="false"

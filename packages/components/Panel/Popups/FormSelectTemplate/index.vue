@@ -2,7 +2,6 @@
   <div>
     <el-dialog ref="FormSelectDialog"
                v-bind="$attrs"
-               width="500px"
                top="23vh"
                :append-to-body="true"
                :modal-append-to-body="false"
