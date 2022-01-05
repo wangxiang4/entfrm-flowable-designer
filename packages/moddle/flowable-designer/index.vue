@@ -12,7 +12,7 @@
                        @handleProcessZoomIn="handleProcessZoomIn"
                        @handleProcessReZoom="handleProcessReZoom"
                        @importDiagram="importDiagram"
-                       @save="$emit('save',bpmnModeler ,$event)"
+                       @save="$emit('save', bpmnModeler, $event)"
       />
       <el-main class="bpmn-viewer-container">
         <div ref="bpmnViewer" class="canvas"/>
