@@ -56,7 +56,7 @@ export function listForm (query) {
 // 查询常用按钮列表
 export function listButton (query) {
   return requestDecorator(globalConfig.axiosInstance({
-    url: '/flowable/extension/button/list',
+    url: '/workflow/extension/button/list',
     method: 'get',
     params: query
   }))
@@ -81,7 +81,7 @@ export function getRoleByIds (ids) {
 // 查询流程表达式列表
 export function listCondition (query) {
   return requestDecorator(globalConfig.axiosInstance({
-    url: '/flowable/extension/condition/list',
+    url: '/workflow/extension/condition/list',
     method: 'get',
     params: query
   }))
@@ -90,7 +90,7 @@ export function listCondition (query) {
 // 查询监听器列表
 export function listListener (query) {
   return requestDecorator(globalConfig.axiosInstance({
-    url: '/flowable/extension/listener/list',
+    url: '/workflow/extension/listener/list',
     method: 'get',
     params: query
   }))
