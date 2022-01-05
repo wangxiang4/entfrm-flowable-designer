@@ -2,6 +2,8 @@
   <div>
     <el-dialog ref="staffAssignmentsTemplateDialog"
                v-bind="$attrs"
+               :append-to-body="true"
+               :modal-append-to-body="false"
                :close-on-click-modal="false"
                width="950px"
                top="3vh"
