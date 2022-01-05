@@ -89,13 +89,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .pagination-container {
-    overflow: auto;
-    background: #fff;
-    padding: 32px 16px;
-  }
-
-  .pagination-container.hidden {
-    display: none;
-  }
+.pagination-container {
+  background: #fff;
+  position: relative;
+  height: 25px;
+  margin-bottom: 10px;
+  margin-top: 15px;
+  padding: 10px 20px !important;
+}
+.pagination-container .el-pagination {
+  right: 0;
+  position: absolute;
+}
+.pagination-container .hidden {
+  display: none;
+}
 </style>

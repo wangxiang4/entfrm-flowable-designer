@@ -3,6 +3,7 @@
     <el-dialog ref="userSelectTemplateDialog"
                v-bind="$attrs"
                top="3vh"
+               width="calc(100vh + 200px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
