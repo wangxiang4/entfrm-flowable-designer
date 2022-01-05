@@ -2,12 +2,12 @@
   <el-header class="bpmn-viewer-header">
     <el-button-group>
       <el-tooltip class="item" effect="dark" content="保存并发布" placement="bottom">
-        <el-button type="primary" size="mini" @click="deploy">
+        <el-button type="primary" size="mini" @click="$emit('save', 1)">
           <span class="iconfont icon-save"> 保存并发布</span>
         </el-button>
       </el-tooltip>
       <el-tooltip class="item" effect="dark" content="保存草稿" placement="bottom">
-        <el-button type="primary" size="mini" @click="save">
+        <el-button type="primary" size="mini" @click="$emit('save', 0)">
           <span class="iconfont icon-save"> 保存草稿</span>
         </el-button>
       </el-tooltip>
@@ -93,44 +93,6 @@ export default {
     }
   },
   methods: {
-    deploy () {
-      let _xml
-      let _svg
-      this.modeler.saveXML((err, xml) => {
-        if (err) {
-          console.error(err)
-        }
-        _xml = xml
-      })
-      this.modeler.saveSVG((err, svg) => {
-        if (err) {
-          console.error(err)
-        }
-        _svg = svg
-      })
-      console.log(_xml)
-      console.log(_svg)
-      // todo:保存发布部署操作
-    },
-    save () {
-      let _xml
-      let _svg
-      this.modeler.saveXML((err, xml) => {
-        if (err) {
-          console.error(err)
-        }
-        _xml = xml
-      })
-      this.modeler.saveSVG((err, svg) => {
-        if (err) {
-          console.error(err)
-        }
-        _svg = svg
-      })
-      console.log(_xml)
-      console.log(_svg)
-      // todo:保存操作
-    },
     reset () {
       this.$emit('restart')
     },

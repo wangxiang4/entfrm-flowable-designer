@@ -12,6 +12,7 @@
                        @handleProcessZoomIn="handleProcessZoomIn"
                        @handleProcessReZoom="handleProcessReZoom"
                        @importDiagram="importDiagram"
+                       @save="$emit('save',bpmnModeler ,$event)"
       />
       <el-main class="bpmn-viewer-container">
         <div ref="bpmnViewer" class="canvas"/>
@@ -183,6 +184,10 @@ export default {
     handleProcessReZoom () {
       this.defaultZoom = 1
       this.bpmnModeler.get('canvas').zoom('fit-viewport', 'auto')
+    },
+    /** 设置bpmnXml */
+    setBpmnXml (xml) {
+      this.importDiagram(xml)
     }
   }
 }
