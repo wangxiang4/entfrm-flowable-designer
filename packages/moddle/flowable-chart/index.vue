@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import NavigatedViewer from 'entfrm-bpmn/dist/bpmn-navigated-viewer.production.min'
+import NavigatedViewer from 'entfrm-bpmn/lib/NavigatedViewer'
 import globalConfig from '@/common/config/global'
 export default {
   name: 'FlowableChart',

@@ -4,7 +4,7 @@
     "name": "entfrm开发团队-王翔",
     "email": "1827945911@qq.com"
   },
-  "version": "1.0.3",
+  "version": "1.0.5",
   "main": "lib/entfrm-flowable-designer.umd.min.js",
   "jsdelivr": "lib/entfrm-flowable-designer.umd.min.js",
   "unpkg": "lib/entfrm-flowable-designer.umd.min.js",
@@ -16,7 +16,7 @@
     "lib": "vue-cli-service build --target lib --name entfrm-flowable-designer --dest lib --formats umd-min packages/moddle/index.js"
   },
   "dependencies": {
-    "entfrm-bpmn": "^8.6.5",
+    "entfrm-bpmn": "^8.6.6",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

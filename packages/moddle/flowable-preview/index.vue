@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Viewer from 'entfrm-bpmn/dist/bpmn-viewer.production.min'
+import Viewer from 'entfrm-bpmn/lib/Viewer'
 import globalConfig from '@/common/config/global'
 export default {
   name: 'FlowablePreview',

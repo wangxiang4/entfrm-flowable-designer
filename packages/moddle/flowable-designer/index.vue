@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import BpmnModeler from 'entfrm-bpmn/dist/bpmn-modeler.production.min'
+import BpmnModeler from 'entfrm-bpmn/lib/Modeler'
 import customTranslate from '@/common/translate/customTranslate'
 import templateXml from '@/common/template'
 import FlowableHeader from '@components/Header'
