@@ -3,6 +3,7 @@
     <el-dialog ref="roleSelectTemplateDialog"
                v-bind="$attrs"
                top="3vh"
+               width="calc(100vh + 20px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
@@ -10,7 +11,7 @@
                @open="init"
     >
       <el-row :gutter="20">
-        <el-col :span="18" :xs="24">
+        <el-col :span="20" :xs="24">
           <el-form ref="queryForm" :model="queryParams" :inline="true">
             <el-form-item label="角色名称" prop="name">
               <el-input v-model="queryParams.name"
@@ -41,7 +42,7 @@
                     @select="handleTags"
                     @select-all="handleTags"
           >
-            <el-table-column type="selection" width="55" align="center"/>
+            <el-table-column type="selection" width="50" align="center"/>
             <el-table-column label="角色编号" prop="id" align="center"/>
             <el-table-column label="角色名称" prop="name" align="center"/>
           </el-table>
@@ -52,7 +53,7 @@
                       @pagination="getList"
           />
         </el-col>
-        <el-col :span="6" :xs="24">
+        <el-col :span="4" :xs="24">
           <div>
             <el-tag v-for="tag in tags" :key="tag.name" closable @close="handleTagClose(tag.id)">{{ tag.name }}</el-tag>
           </div>

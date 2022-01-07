@@ -3,6 +3,7 @@
     <el-dialog ref="listenerListDialog"
                v-bind="$attrs"
                top="3vh"
+               width="calc(100vh + 280px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
@@ -11,8 +12,9 @@
     >
       <el-table ref="listenerTable"
                 v-loading="loading"
-                height="calc(100vh - 370px)"
+                height="calc(100vh - 350px)"
                 size="small"
+                border
                 :data="listenerList"
                 @select="handleTags"
                 @select-all="handleTags"

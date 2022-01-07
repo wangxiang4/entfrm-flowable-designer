@@ -2,7 +2,8 @@
   <div>
     <el-dialog ref="FormSelectDialog"
                v-bind="$attrs"
-               top="23vh"
+               top="15vh"
+               width="calc(100vh - 150px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
@@ -63,6 +64,7 @@ export default {
   },
   methods: {
     closeWindow () {
+      this.formKey = undefined
       this.$refs.FormSelectDialog.hide()
     },
     save () {

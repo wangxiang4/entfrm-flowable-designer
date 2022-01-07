@@ -3,6 +3,7 @@
     <el-dialog ref="listenerAddDialog"
                v-bind="$attrs"
                top="16vh"
+               width="calc(100vh - 80px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"

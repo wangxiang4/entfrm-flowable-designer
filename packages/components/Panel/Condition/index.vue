@@ -96,7 +96,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <process-expression-select-template :visible.sync="selectTemplateVisible" @save="handleSelectTemplateSave"/>
+    <process-expression-select-template title="流程表达式选择" :visible.sync="selectTemplateVisible" @save="handleSelectTemplateSave"/>
   </div>
 </template>
 

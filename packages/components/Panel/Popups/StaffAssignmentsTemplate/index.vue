@@ -2,6 +2,7 @@
   <div>
     <el-dialog ref="staffAssignmentsTemplateDialog"
                v-bind="$attrs"
+               width="calc(100vh + 300px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"

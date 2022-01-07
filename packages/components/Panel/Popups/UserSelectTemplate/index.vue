@@ -3,25 +3,24 @@
     <el-dialog ref="userSelectTemplateDialog"
                v-bind="$attrs"
                top="3vh"
-               width="calc(100vh + 200px)"
+               width="calc(100vh + 300px)"
                :append-to-body="true"
                :modal-append-to-body="false"
                :close-on-click-modal="false"
                v-on="$listeners"
                @open="init"
     >
-      <el-row :gutter="20">
-        <el-col :span="4" :xs="24">
-          <div class="head-container">
-            <el-input v-model="name"
-                      placeholder="请输入机构名称"
-                      clearable
-                      size="small"
-                      prefix-icon="el-icon-search"
-                      style="margin-bottom: 20px"
-            />
-          </div>
-          <div class="head-container">
+      <el-container>
+        <el-aside style="width: 200px;">
+          <el-card class="org">
+            <div slot="header">
+              <el-input v-model="name"
+                        placeholder="请输入机构名称"
+                        clearable
+                        size="small"
+                        prefix-icon="el-icon-search"
+              />
+            </div>
             <el-tree ref="tree"
                      :data="deptOptions"
                      :props="defaultProps"
@@ -30,58 +29,62 @@
                      default-expand-all
                      @node-click="handleNodeClick"
             />
-          </div>
-        </el-col>
-        <el-col :span="16" :xs="24">
-          <el-form ref="queryForm" :model="queryParams" :inline="true">
-            <el-form-item label="用户名称" prop="userName">
-              <el-input v-model="queryParams.userName"
-                        placeholder="请输入用户名称"
-                        clearable
-                        size="small"
-                        style="width: 240px"
-                        @keyup.enter.native="handleQuery"
-              />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary"
-                         icon="el-icon-search"
-                         size="mini"
-                         @click="handleQuery"
-              >搜索</el-button>
-              <el-button icon="el-icon-refresh-right"
-                         size="mini"
-                         @click="resetQuery"
-              >重置</el-button>
-            </el-form-item>
-          </el-form>
-          <el-table ref="userTable"
-                    v-loading="loading"
-                    size="small"
-                    height="calc(100vh - 430px)"
-                    :data="userList"
-                    @select="handleTags"
-                    @select-all="handleTags"
-          >
-            <el-table-column type="selection" width="45" align="center"/>
-            <el-table-column label="用户编号" align="center" prop="id"/>
-            <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
-            <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true"/>
-            <el-table-column label="机构名称" align="center" prop="deptName" :show-overflow-tooltip="true"/>
-          </el-table>
-          <pagination v-show="total>0"
-                      :total="total"
-                      :page.sync="queryParams.current"
-                      :limit.sync="queryParams.size"
-                      @pagination="getList"
-          />
-        </el-col>
-        <el-col :span="4" :xs="24">
+          </el-card>
+        </el-aside>
+        <el-container>
+          <el-header>
+            <el-form ref="queryForm" :model="queryParams" :inline="true">
+              <el-form-item label="用户名称" prop="userName">
+                <el-input v-model="queryParams.userName"
+                          placeholder="请输入用户名称"
+                          clearable
+                          size="small"
+                          style="width: 240px"
+                          @keyup.enter.native="handleQuery"
+                />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary"
+                           icon="el-icon-search"
+                           size="mini"
+                           @click="handleQuery"
+                >搜索</el-button>
+                <el-button icon="el-icon-refresh-right"
+                           size="mini"
+                           @click="resetQuery"
+                >重置</el-button>
+              </el-form-item>
+            </el-form>
+          </el-header>
+          <el-main>
+            <el-table ref="userTable"
+                      v-loading="loading"
+                      size="small"
+                      height="calc(100vh - 400px)"
+                      :data="userList"
+                      @select="handleTags"
+                      @select-all="handleTags"
+            >
+              <el-table-column type="selection" width="50" align="center"/>
+              <el-table-column label="用户编号" align="center" prop="id"/>
+              <el-table-column label="用户名称" align="center" prop="userName" :show-overflow-tooltip="true"/>
+              <el-table-column label="用户昵称" align="center" prop="nickName" :show-overflow-tooltip="true"/>
+              <el-table-column label="机构名称" align="center" prop="deptName" :show-overflow-tooltip="true"/>
+            </el-table>
+            <pagination v-show="total>0"
+                        :total="total"
+                        :page.sync="queryParams.current"
+                        :limit.sync="queryParams.size"
+                        @pagination="getList"
+            />
+          </el-main>
+        </el-container>
+        <el-aside style="width: 150px;">
           <div>
             <el-tag v-for="tag in tags" :key="tag.userName" closable @close="handleTagClose(tag.id)">{{ tag.userName }}</el-tag>
           </div>
-        </el-col>
-      </el-row>
+        </el-aside>
+      </el-container>
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="closeWindow()">关闭</el-button>
         <el-button size="small" type="primary" @click="save()">确认</el-button>
@@ -242,3 +245,22 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.org {
+  height: calc(100% - 3px);
+
+  ::v-deep .el-card__header {
+    padding: 10px;
+  }
+
+  ::v-deep .el-card__body {
+    padding: 10px;
+    max-height: 520px;
+    overflow: auto;
+  }
+}
+
+.el-main {
+  padding: 10px;
+}
+</style>

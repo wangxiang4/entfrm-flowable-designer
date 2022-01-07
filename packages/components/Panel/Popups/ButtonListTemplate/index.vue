@@ -12,12 +12,13 @@
       <el-table ref="buttonTable"
                 v-loading="loading"
                 size="small"
-                height="calc(100vh - 363px)"
+                border
+                height="calc(100vh - 300px)"
                 :data="buttonList"
                 @select="handleTags"
                 @select-all="handleTags"
       >
-        <el-table-column type="selection" width="45" align="center"/>
+        <el-table-column type="selection" width="50" align="center"/>
         <el-table-column label="名称" align="center" prop="name"/>
         <el-table-column label="编码" align="center" prop="code"/>
         <el-table-column label="排序" align="center" prop="sort"/>
@@ -92,7 +93,7 @@ export default {
         rows && rows.forEach(row => {
           this.$refs.buttonTable.toggleRowSelection(row, true)
         })
-      })
+      }).catch(() => { this.loading = false })
     },
     /** 处理保存动作 */
     save () {
