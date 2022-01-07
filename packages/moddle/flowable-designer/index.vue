@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container v-loading="loading">
     <el-container direction="vertical">
       <flowable-header :modeler="bpmnModeler"
                        :can-redo="canRedo"
@@ -12,7 +12,7 @@
                        @handleProcessZoomIn="handleProcessZoomIn"
                        @handleProcessReZoom="handleProcessReZoom"
                        @importDiagram="importDiagram"
-                       @save="$emit('save', bpmnModeler, $event)"
+                       @save="handleSubmitModel"
       />
       <el-main class="bpmn-viewer-container">
         <div ref="bpmnViewer" class="canvas"/>
@@ -29,6 +29,8 @@ import templateXml from '@/common/template'
 import FlowableHeader from '@components/Header'
 import flowableDescriptor from '@/common/config/flowable'
 import FlowablePanel from '@components/Panel'
+import lodash from 'lodash'
+import { activityExtensionDataSave, activityExtensionPropertySave, deployModel, addModel, editModel } from '@/api/flowable-designer'
 
 export default {
   name: 'FlowableDesigner',
@@ -48,6 +50,8 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      modelData: {},
       bpmnModeler: undefined,
       canRedo: false,
       canUndo: false,
@@ -57,7 +61,7 @@ export default {
   watch: {
     bpmnXml: {
       handler (xml) {
-        this.importDiagram(xml)
+        this.setBpmnXml(xml)
       }
     }
   },
@@ -188,7 +192,143 @@ export default {
     },
     /** 设置bpmnXml */
     setBpmnXml (xml) {
-      this.importDiagram(xml)
+      if (xml) {
+        this.importDiagram(xml)
+      } else {
+        this.restart()
+      }
+    },
+    /** 模型数据重置 */
+    reset () {
+      this.modelData = {
+        id: undefined,
+        key: undefined,
+        name: undefined,
+        description: undefined,
+        createdBy: undefined,
+        lastUpdatedBy: undefined,
+        lastUpdated: undefined,
+        latestVersion: undefined,
+        version: undefined,
+        modelType: undefined
+      }
+    },
+    /** 处理模型流程 */
+    handleModelProcess (flowElements, activityExtensionProperty, activityExtensionData) {
+      for (let i = 0; i < flowElements.length; ++i) {
+        const bpmnElement = flowElements[i]
+        const bpmnElementParent = lodash.get(bpmnElement, '$parent', {})
+        const extensionElements = lodash.get(bpmnElement, 'extensionElements', {})
+        const conditionType = lodash.get(bpmnElement, '$attrs.flowable:conditionType')
+        // ----------------扩展活动属性存储------------------
+        if (bpmnElement.formType != undefined) {
+          activityExtensionProperty.push({
+            key: 'formType',
+            processDefId: bpmnElementParent.id,
+            activityDefId: bpmnElement.id,
+            value: bpmnElement.formType
+          })
+        }
+        if (bpmnElement.formReadOnly != undefined) {
+          activityExtensionProperty.push({
+            key: 'formReadOnly',
+            processDefId: bpmnElementParent.id,
+            activityDefId: bpmnElement.id,
+            value: bpmnElement.formReadOnly
+          })
+        }
+        if (conditionType != undefined) {
+          activityExtensionProperty.push({
+            key: 'conditionType',
+            processDefId: bpmnElementParent.id,
+            activityDefId: bpmnElement.id,
+            value: conditionType
+          })
+        }
+        // ---------------扩展活动属性数据存储----------------
+        const values = lodash.get(extensionElements, 'values', [])
+        // ------------------用户分配人---------------------
+        const assignee = values.filter(element => element.$type == 'flowable:Assignee')
+        // ------------------常用按钮-----------------------
+        const button = values.filter(element => element.$type == 'flowable:Button')
+        // ------------------流转条件-----------------------
+        const condition = values.filter(element => element.$type == 'flowable:Condition')
+        if ((assignee.length + button.length + condition.length) > 0) {
+          activityExtensionData.push({
+            activityDefId: bpmnElement.id,
+            processDefId: bpmnElementParent.id,
+            workflowAssigneeList: assignee,
+            workflowButtonList: button,
+            workflowConditionList: condition
+          })
+        }
+        if (bpmnElement.$type === 'bpmn:SubProcess') {
+          const flowElements = lodash.get(bpmnElement, 'flowElements', [])
+          this.handleModelProcess(flowElements, activityExtensionProperty, activityExtensionData)
+        }
+      }
+    },
+    /** 处理模型提交 */
+    handleSubmitModel (code) {
+      if (this.bpmnModeler) {
+        // 获取根流程业务对象,需要考虑泳道
+        const rootElement = this.bpmnModeler.get('canvas').getRootElement()
+        const root = lodash.get(rootElement, 'businessObject', {})
+        this.loading = true
+        if (this.modelData.id != undefined) {
+          this.bpmnModeler.saveXML({
+            format: true
+          }).then(({ xml }) => {
+            // 处理模型修改
+            editModel(this.modelData.id, {
+              key: root.id,
+              name: root.name,
+              json_xml: xml,
+              // 这个字段为后期版本冲突功能做准备
+              newversion: false,
+              description: '',
+              comment: '',
+              lastUpdated: this.modelData.lastUpdated
+            }).then(response => {
+              this.modelData = response
+              const chain = []
+              code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
+              const activityExtensionProperty = []
+              const activityExtensionData = []
+              const definitions = this.bpmnModeler.getDefinitions()
+              const rootElements = lodash.get(definitions, 'rootElements', [])
+              lodash.forEach(rootElements, item => {
+                // 需要考虑泳道部分逻辑
+                if (item.$type == 'bpmn:Collaboration') return
+                // 处理泳道多个流程
+                const flowElements = lodash.get(item, 'flowElements', [])
+                this.handleModelProcess(flowElements, activityExtensionProperty, activityExtensionData)
+              })
+              chain.push(activityExtensionPropertySave(activityExtensionProperty))
+              chain.push(activityExtensionDataSave(activityExtensionData))
+              return Promise.all(chain)
+            }).then(() => {
+              this.$message.success('保存流程模型成功!')
+              this.loading = false
+              this.$emit('refresh')
+            }).catch(() => {
+              this.$message.error('保存流程模型失败!')
+              this.loading = false
+            })
+          })
+        } else {
+          // 处理模型新增
+          addModel({
+            key: root.id,
+            name: root.name,
+            modelType: 0,
+            description: ''
+          }).then(response => {
+            this.modelData = response
+            this.handleSubmitModel(code)
+          }).catch(() => { this.loading = false })
+        }
+      } else this.$message.error('bpmn建模对象不存在,请检查!')
     }
   }
 }

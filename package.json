@@ -4,7 +4,7 @@
     "name": "entfrm开发团队-王翔",
     "email": "1827945911@qq.com"
   },
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "lib/entfrm-flowable-designer.umd.min.js",
   "jsdelivr": "lib/entfrm-flowable-designer.umd.min.js",
   "unpkg": "lib/entfrm-flowable-designer.umd.min.js",
@@ -29,6 +29,7 @@
     "element-ui": "^2.15.1",
     "eslint": "^7.24.0",
     "eslint-plugin-vue": "^6.2.2",
+    "qs": "^6.10.2",
     "sass": "^1.32.13",
     "sass-loader": "^10.2.0",
     "vue": "^2.6.14",
