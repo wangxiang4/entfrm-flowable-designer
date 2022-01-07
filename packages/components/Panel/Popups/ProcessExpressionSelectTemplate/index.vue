@@ -94,7 +94,7 @@ export default {
         this.expressionList = response.data
         this.total = response.total
         this.loading = false
-      })
+      }).catch(() => { this.loading = false })
     },
     /** 处理搜索动作 */
     handleQuery () {

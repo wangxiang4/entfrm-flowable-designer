@@ -198,6 +198,14 @@ export default {
         this.restart()
       }
     },
+    /** 设置模型数据 */
+    setModelData (data) {
+      this.modelData = data || {}
+    },
+    /** 获取模型数据 */
+    getModelData () {
+      return this.modelData
+    },
     /** 模型数据重置 */
     reset () {
       this.modelData = {

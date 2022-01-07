@@ -106,7 +106,7 @@ export default {
         rows && rows.forEach(row => {
           this.$refs.listenerTable.toggleRowSelection(row, true)
         })
-      })
+      }).catch(() => { this.loading = false })
     },
     /** 处理保存动作 */
     save () {

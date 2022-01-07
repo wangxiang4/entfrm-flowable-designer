@@ -125,7 +125,7 @@ export default {
         rows && rows.forEach(row => {
           this.$refs.roleTable.toggleRowSelection(row, true)
         })
-      })
+      }).catch(() => { this.loading = false })
     },
     /** 处理搜索动作 */
     handleQuery () {
