@@ -51,11 +51,12 @@ export default {
       this.handleHighlightImportDiagram(this.options)
     },
     /** 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件 */
-    handleHighlightImportDiagram (data = {}) {
+    setHighlightImportDiagram (data = {}) {
       const opt = {
         activityIds: data.activityIds || [],
         bpmnXml: data.bpmnXml || '',
         flows: data.bpmnXml || [],
+        // 排除流程面板以及泳道以及一些没必要的类型
         exclude: ['bpmndi:BPMNPlane']
       }
       // 采用bpmn内部XMl导入与XML导出模块做处理高亮处理,这里后面又重新的使用importXML导入了一次,原因不想破坏内部的生命周期回调
@@ -95,9 +96,11 @@ export default {
         })
         return Promise.resolve(definitions)
       }).then(definitions => {
-        this.viewer._moddle.toXML(definitions).then(result => {
-          this.viewer.importXML(result.xml).catch(() => this.$message.error('打开模型出错,请确认该模型符合Bpmn2.0规范'))
-        })
+        return this.viewer._moddle.toXML(definitions)
+      }).then(result => {
+        this.viewer.importXML(result.xml)
+      }).catch(() => {
+        this.$message.error('导入模型出错,请确认该模型符合Bpmn2.0规范')
       })
     }
   }

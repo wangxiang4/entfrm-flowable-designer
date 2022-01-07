@@ -172,6 +172,7 @@ export default {
   methods: {
     /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
+      console.log('条件元素', this.bpmnElement)
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
       this.modeling = this.modeler.get('modeling')
@@ -193,17 +194,20 @@ export default {
     },
     /** 查询开始节点动态表单字段,可以拿启动时存储在flowable流程中的字段做流转判断 */
     handleStartNodeDynamicFormField () {
-      // 获取根流程对象,注意必须要是根流程要不然多级子流程会出问题
-      const rootBusinessObject = this.modeler.get('canvas').getRootElement().businessObject
+      // 获取根流程对象,注意必须要是根流程要不然多级子流程会出问题,以及需要注意泳道多流程同时进行
+      let rootElement = lodash.get(this.bpmnElement, 'parent', {})
+      while (rootElement.type === 'bpmn:SubProcess') rootElement = lodash.get(rootElement, 'parent', {})
+      let rootBusinessObject = rootElement.businessObject
+      rootElement.type === 'bpmn:Participant' && (rootBusinessObject = rootBusinessObject.processRef)
       const flowElements = lodash.get(rootBusinessObject, 'flowElements', [])
-      // 获取第一个开始节点,充当流转条件的表单字段
+      // 这里使用find,原因:由于开始事件是可以删除的,不是固定的,所以采用查找从上往下找,找到就可以确定是第一个开始事件
       const startEventBusinessObject = lodash.find(flowElements, item => item.$type === 'bpmn:StartEvent')
       if (!lodash.isEmpty(startEventBusinessObject)) {
         // 获取动态表单字段
         const extensionElements = lodash.get(startEventBusinessObject, 'extensionElements.values', [])
         const formPropertyExtension = lodash.filter(extensionElements, item => item.$type === 'flowable:FormProperty')
         this.fieldOptions = formPropertyExtension.map(item => Object({ label: item.name, value: item.id }))
-      }
+      } else this.fieldOptions = []
     },
     /** 处理选择模板保存 */
     handleSelectTemplateSave (processExpression) {

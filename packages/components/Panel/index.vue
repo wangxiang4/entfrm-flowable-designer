@@ -111,12 +111,18 @@ export default {
     },
     // 设置流程开始第一个开始节点允许开启表单选择,flowable可以在启动时保存流程变量(需考虑子流程开始节点不开启)
     formValidate () {
-      // 获取根流程对象,注意必须要是根流程要不然多级子流程会出问题
-      const rootBusinessObject = this.modeler.get('canvas').getRootElement().businessObject
-      const flowElements = lodash.get(rootBusinessObject, 'flowElements', [])
-      // 这里使用find,原因:由于开始事件是可以删除的,不是固定的,所以采用查找从上往下找,找到就可以确定是第一个开始事件
-      const startEventBusinessObject = lodash.find(flowElements, item => item.$type === 'bpmn:StartEvent') || {}
-      return this.bpmnType === 'UserTask' || startEventBusinessObject.id === this.bpmnElement.id
+      const startEventIds = []
+      // 获取根流程对象,注意必须要是根流程要不然多级子流程会出问题,以及需要注意泳道多流程同时进行
+      const definitions = this.modeler.getDefinitions() || {};
+      (definitions.rootElements || []).forEach(item => {
+        // 需要考虑泳道部分逻辑
+        if (item.$type === 'bpmn:Collaboration') return
+        const flowElements = lodash.get(item, 'flowElements', [])
+        // 这里使用find,原因:由于开始事件是可以删除的,不是固定的,所以采用查找从上往下找,找到就可以确定是第一个开始事件
+        const startEventBusinessObject = lodash.find(flowElements, item => item.$type === 'bpmn:StartEvent') || {}
+        startEventIds.push(startEventBusinessObject.id)
+      })
+      return this.bpmnType === 'UserTask' || startEventIds.includes(this.bpmnElement.id)
     }
   },
   mounted () {

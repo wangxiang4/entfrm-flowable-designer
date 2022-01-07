@@ -76,6 +76,7 @@ export default {
         additionalModules: _additionalModules,
         moddleExtensions: _moddleExtensions
       })
+      window.bpmn = this.bpmnModeler
       this.importDiagram(this.bpmnXml || templateXml.initTemplate())
       this.initModelListeners()
     },
