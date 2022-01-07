@@ -172,7 +172,6 @@ export default {
   methods: {
     /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
-      console.log('条件元素', this.bpmnElement)
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
       this.modeling = this.modeler.get('modeling')
