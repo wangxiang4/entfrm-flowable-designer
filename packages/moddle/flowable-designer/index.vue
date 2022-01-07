@@ -39,10 +39,6 @@ export default {
     FlowablePanel
   },
   props: {
-    bpmnXml: {
-      type: String,
-      default: ''
-    },
     panelWidth: {
       type: Number,
       default: 500
@@ -56,13 +52,6 @@ export default {
       canRedo: false,
       canUndo: false,
       defaultZoom: 1
-    }
-  },
-  watch: {
-    bpmnXml: {
-      handler (xml) {
-        this.setBpmnXml(xml)
-      }
     }
   },
   mounted () {
@@ -81,7 +70,7 @@ export default {
         moddleExtensions: _moddleExtensions
       })
       window.bpmn = this.bpmnModeler
-      this.importDiagram(this.bpmnXml || templateXml.initTemplate())
+      this.importDiagram(templateXml.initTemplate())
       this.initModelListeners()
     },
     /** 初始化监听事件 */
