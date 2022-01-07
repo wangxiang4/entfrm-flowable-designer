@@ -1,5 +1,9 @@
 <template>
-  <el-container v-loading="loading">
+  <el-container v-loading="loading"
+                element-loading-text="玩命加载中..."
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+  >
     <el-container direction="vertical">
       <flowable-header :modeler="bpmnModeler"
                        :can-redo="canRedo"

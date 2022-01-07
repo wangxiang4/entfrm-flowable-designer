@@ -19,7 +19,7 @@
                 @select="handleTags"
                 @select-all="handleTags"
       >
-        <el-table-column type="selection" width="45" align="center"/>
+        <el-table-column type="selection" width="50" align="center"/>
         <el-table-column label="名称" align="center" prop="name"/>
         <el-table-column label="监听器类型" align="center" prop="listenerType">
           <template slot-scope="scope">{{ scope.row.listenerType === 1 ?'执行监听器':'任务监听器' }}</template>
