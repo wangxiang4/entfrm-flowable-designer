@@ -12,7 +12,7 @@
     >
       <el-container>
         <el-aside style="width: 200px;">
-          <el-card class="org">
+          <el-card class="org" shadow="never">
             <div slot="header">
               <el-input v-model="name"
                         placeholder="请输入机构名称"

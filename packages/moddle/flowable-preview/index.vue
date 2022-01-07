@@ -33,7 +33,7 @@ export default {
   watch: {
     options: {
       handler (data) {
-        this.handleHighlightImportDiagram(data)
+        this.setHighlightImportDiagram(data)
       },
       deep: true
     }
@@ -48,7 +48,7 @@ export default {
       this.viewer = new Viewer({
         container: this.canvas
       })
-      this.handleHighlightImportDiagram(this.options)
+      this.setHighlightImportDiagram(this.options)
     },
     /** 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件 */
     setHighlightImportDiagram (data = {}) {

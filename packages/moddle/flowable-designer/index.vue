@@ -348,7 +348,7 @@ export default {
               return Promise.all(chain)
             }).then(result => {
               this.$notify({
-                title: '警告',
+                title: '提示',
                 message: result[0].join(''),
                 type: 'warning',
                 dangerouslyUseHTMLString: true
