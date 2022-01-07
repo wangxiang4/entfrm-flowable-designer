@@ -215,15 +215,22 @@ export default {
       }
     },
     /** 处理模型流程 */
-    handleModelProcess (flowElements, activityExtensionProperty, activityExtensionData) {
-      for (let i = 0; i < flowElements.length; ++i) {
-        const bpmnElement = flowElements[i]
+    handleModelProcess (opts) {
+      const options = {
+        flowElements: opts.flowElements || [],
+        activityExtensionProperty: opts.activityExtensionProperty || [],
+        activityExtensionData: opts.activityExtensionData || [],
+        validateErrorData: opts.validateErrorData || []
+      }
+      for (let i = 0; i < options.flowElements.length; ++i) {
+        const bpmnElement = options.flowElements[i]
         const bpmnElementParent = lodash.get(bpmnElement, '$parent', {})
         const extensionElements = lodash.get(bpmnElement, 'extensionElements', {})
         const conditionType = lodash.get(bpmnElement, '$attrs.flowable:conditionType')
+        const bpmnType = lodash.get(bpmnElement, '$type', '')
         // ----------------扩展活动属性存储------------------
         if (bpmnElement.formType != undefined) {
-          activityExtensionProperty.push({
+          options.activityExtensionProperty.push({
             key: 'formType',
             processDefId: bpmnElementParent.id,
             activityDefId: bpmnElement.id,
@@ -231,7 +238,7 @@ export default {
           })
         }
         if (bpmnElement.formReadOnly != undefined) {
-          activityExtensionProperty.push({
+          options.activityExtensionProperty.push({
             key: 'formReadOnly',
             processDefId: bpmnElementParent.id,
             activityDefId: bpmnElement.id,
@@ -239,7 +246,7 @@ export default {
           })
         }
         if (conditionType != undefined) {
-          activityExtensionProperty.push({
+          options.activityExtensionProperty.push({
             key: 'conditionType',
             processDefId: bpmnElementParent.id,
             activityDefId: bpmnElement.id,
@@ -255,7 +262,7 @@ export default {
         // ------------------流转条件-----------------------
         const condition = values.filter(element => element.$type == 'flowable:Condition')
         if ((assignee.length + button.length + condition.length) > 0) {
-          activityExtensionData.push({
+          options.activityExtensionData.push({
             activityDefId: bpmnElement.id,
             processDefId: bpmnElementParent.id,
             workflowAssigneeList: assignee,
@@ -263,9 +270,33 @@ export default {
             workflowConditionList: condition
           })
         }
+        // ------------------制定校验规则--------------------
+        const formProperty = values.filter(element => element.$type == 'flowable:FormProperty')
+        switch (bpmnType) {
+          case 'bpmn:StartEvent':
+            if (!formProperty.length && !bpmnElement.outFormKey) {
+              options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
+            }
+            break
+          case 'bpmn:UserTask':
+            if (!assignee.length) {
+              options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有指定办理人。</p>`)
+            }
+            if (!button.length) {
+              options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置按钮。</p>`)
+            }
+            if (!formProperty.length && !bpmnElement.outFormKey) {
+              options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
+            }
+            break
+        }
         if (bpmnElement.$type === 'bpmn:SubProcess') {
           const flowElements = lodash.get(bpmnElement, 'flowElements', [])
-          this.handleModelProcess(flowElements, activityExtensionProperty, activityExtensionData)
+          this.handleModelProcess({
+            flowElements,
+            activityExtensionProperty: options.activityExtensionProperty,
+            activityExtensionData: options.activityExtensionData
+          })
         }
       }
     },
@@ -296,6 +327,7 @@ export default {
               code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
               const activityExtensionProperty = []
               const activityExtensionData = []
+              const validateErrorData = []
               const definitions = this.bpmnModeler.getDefinitions()
               const rootElements = lodash.get(definitions, 'rootElements', [])
               lodash.forEach(rootElements, item => {
@@ -303,12 +335,24 @@ export default {
                 if (item.$type == 'bpmn:Collaboration') return
                 // 处理泳道多个流程
                 const flowElements = lodash.get(item, 'flowElements', [])
-                this.handleModelProcess(flowElements, activityExtensionProperty, activityExtensionData)
+                this.handleModelProcess({
+                  flowElements,
+                  activityExtensionProperty,
+                  activityExtensionData,
+                  validateErrorData
+                })
               })
+              chain.push(validateErrorData)
               chain.push(activityExtensionPropertySave(activityExtensionProperty))
               chain.push(activityExtensionDataSave(activityExtensionData))
               return Promise.all(chain)
-            }).then(() => {
+            }).then(result => {
+              this.$notify({
+                title: '警告',
+                message: result[0].join(''),
+                type: 'warning',
+                dangerouslyUseHTMLString: true
+              })
               this.$message.success('保存流程模型成功!')
               this.loading = false
               this.$emit('refresh')
