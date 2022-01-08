@@ -302,78 +302,99 @@ export default {
     },
     /** 处理模型提交 */
     handleSubmitModel (code) {
-      if (this.bpmnModeler) {
-        // 获取根流程业务对象,需要考虑泳道
-        const rootElement = this.bpmnModeler.get('canvas').getRootElement()
-        const root = lodash.get(rootElement, 'businessObject', {})
-        this.loading = true
-        if (this.modelData.id != undefined) {
-          this.bpmnModeler.saveXML({
-            format: true
-          }).then(({ xml }) => {
-            // 处理模型修改
-            editModel(this.modelData.id, {
-              key: root.id,
-              name: root.name,
-              json_xml: xml,
-              // 这个字段为后期版本冲突功能做准备
-              newversion: false,
-              description: '',
-              comment: '',
-              lastUpdated: this.modelData.lastUpdated
+      new Promise((resolve, reject) => {
+        // todo:第一层处理流程模型空值相关校验
+        if (this.bpmnModeler) {
+          const definitions = this.bpmnModeler.getDefinitions()
+          const rootElements = lodash.get(definitions, 'rootElements', [])
+          if (rootElements.every(element => {
+            const flowElements = lodash.get(element, 'flowElements', [])
+            return element.$type == 'bpmn:Collaboration' || flowElements.length
+          })) {
+            // 处理一些需要初始化的值
+            this.loading = true
+            resolve(rootElements)
+          } else reject('流程模型不能为空,请检查!')
+        } else reject('bpmn建模对象不存在,请检查!')
+      }).then(rootElements => {
+        // todo:第二层处理流程模型新增
+        // 获取根流程业务对象,需要考虑支持泳道的逻辑
+        const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
+        const headElement = lodash.get(canvasRootElement, 'businessObject', {})
+        return new Promise((resolve, reject) => {
+          if (this.modelData.id == undefined) {
+            addModel({
+              key: headElement.id,
+              name: headElement.name,
+              modelType: 0,
+              description: ''
             }).then(response => {
               this.modelData = response
-              const chain = []
-              code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
-              const activityExtensionProperty = []
-              const activityExtensionData = []
-              const validateErrorData = []
-              const definitions = this.bpmnModeler.getDefinitions()
-              const rootElements = lodash.get(definitions, 'rootElements', [])
-              lodash.forEach(rootElements, item => {
-                // 需要考虑泳道部分逻辑
-                if (item.$type == 'bpmn:Collaboration') return
-                // 处理泳道多个流程
-                const flowElements = lodash.get(item, 'flowElements', [])
-                this.handleModelProcess({
-                  flowElements,
-                  activityExtensionProperty,
-                  activityExtensionData,
-                  validateErrorData
-                })
-              })
-              chain.push(validateErrorData)
-              chain.push(activityExtensionPropertySave(activityExtensionProperty))
-              chain.push(activityExtensionDataSave(activityExtensionData))
-              return Promise.all(chain)
-            }).then(result => {
-              this.$notify({
-                title: '提示',
-                message: result[0].join(''),
-                type: 'warning',
-                dangerouslyUseHTMLString: true
-              })
-              this.$message.success('保存流程模型成功!')
-              this.loading = false
-              this.$emit('refresh')
+              resolve({ headElement, rootElements })
             }).catch(() => {
-              this.$message.error('保存流程模型失败!')
-              this.loading = false
+              reject('保存流程模型失败!')
             })
+          } else resolve({ rootElements, headElement })
+        })
+      }).then(({ rootElements, headElement }) => {
+        // todo:第三层处理bpmnXml
+        return this.bpmnModeler.saveXML({
+          format: true
+        }).then(result => {
+          return Promise.resolve({ rootElements, headElement, result })
+        })
+      }).then(({ rootElements, headElement, result }) => {
+        // todo:第四层处理流程模型修改
+        return editModel(this.modelData.id, {
+          key: headElement.id,
+          name: headElement.name,
+          json_xml: result.xml,
+          // 这个字段为后期版本冲突功能做准备
+          newversion: false,
+          description: '',
+          comment: '',
+          lastUpdated: this.modelData.lastUpdated
+        }).then(response => {
+          this.modelData = response
+          const chain = []
+          code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
+          const activityExtensionProperty = []
+          const activityExtensionData = []
+          const validateErrorData = []
+          lodash.forEach(rootElements, item => {
+            // 需要考虑泳道部分逻辑
+            if (item.$type == 'bpmn:Process') {
+              // 处理泳道多个流程
+              const flowElements = lodash.get(item, 'flowElements', [])
+              this.handleModelProcess({
+                flowElements,
+                activityExtensionProperty,
+                activityExtensionData,
+                validateErrorData
+              })
+            }
           })
-        } else {
-          // 处理模型新增
-          addModel({
-            key: root.id,
-            name: root.name,
-            modelType: 0,
-            description: ''
-          }).then(response => {
-            this.modelData = response
-            this.handleSubmitModel(code)
-          }).catch(() => { this.loading = false })
-        }
-      } else this.$message.error('bpmn建模对象不存在,请检查!')
+          chain.push(validateErrorData)
+          chain.push(activityExtensionPropertySave(activityExtensionProperty))
+          chain.push(activityExtensionDataSave(activityExtensionData))
+          return Promise.all(chain)
+        }).catch(() => {
+          return Promise.reject('保存流程模型失败!')
+        })
+      }).then(results => {
+        results[0].length && this.$notify({
+          title: '提示',
+          message: results[0].join(''),
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        })
+        this.$message.success('保存流程模型成功!')
+        this.$emit('refresh')
+        this.loading = false
+      }).catch(err => {
+        this.$message.error(err)
+        this.loading = false
+      })
     }
   }
 }

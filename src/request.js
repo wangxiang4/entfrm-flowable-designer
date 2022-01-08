@@ -48,7 +48,7 @@ service.interceptors.response.use(res => {
   const status = Number(res.status) || 200
   const message = errorCode[status] || res.data.msg || errorCode['default']
   if (status === 500) {
-    this.message.Message({
+    Message({
       message: message,
       type: 'error'
     })
