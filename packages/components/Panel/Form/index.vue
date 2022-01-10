@@ -149,11 +149,11 @@ export default {
       this.$set(this.outForm, 'formKey', this.formType === '2' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'outFormKey') || ''))
       const dyFormKey = this.formType === '1' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey') || '')
       // 查询动态表单数据进行数据格式化处理(格式化成父子嵌套数据)
-      const form = lodash.find(this.options, item => item.code === dyFormKey)
+      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id === dyFormKey)
       if (!lodash.isEmpty(form)) {
         const dyForm = lodash.create({})
         lodash.set(dyForm, 'name', form.name)
-        lodash.set(dyForm, 'version', form.version)
+        lodash.set(dyForm, 'version', this.getFormDefinitionJson(form).version)
         lodash.set(dyForm, 'formKey', dyFormKey)
         const extensionElements = lodash.get(this.bpmnBusinessObject, 'extensionElements.values', [])
         const formPropertyExtension = lodash.filter(extensionElements, item => item.$type === 'flowable:FormProperty')
@@ -191,9 +191,9 @@ export default {
     handleSelectTemplateSave (form) {
       const dyForm = lodash.create({})
       lodash.set(dyForm, 'name', form.name)
-      lodash.set(dyForm, 'version', this.$refs.formSelect.getFormDefinitionJson(form).version)
-      lodash.set(dyForm, 'formKey', this.$refs.formSelect.getFormDefinitionJson(form).id)
-      const formJson = this.$refs.formSelect.getFormDefinitionJson(form).json
+      lodash.set(dyForm, 'version', this.getFormDefinitionJson(form).version)
+      lodash.set(dyForm, 'formKey', this.getFormDefinitionJson(form).id)
+      const formJson = this.getFormDefinitionJson(form).json
       const dynamicForm = eval('(' + formJson + ')') || {}
       const dynamicFormField = []
       this.handleDeepFormData(dynamicForm.column, dynamicFormField)
@@ -251,6 +251,9 @@ export default {
         this.formList = []
         this.handleMakeXml()
       }).catch(function () {})
+    },
+    getFormDefinitionJson (item = {}) {
+      return item.formDefinitionJson || {}
     },
     /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {

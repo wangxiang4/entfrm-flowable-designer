@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    getFormDefinitionJson (item) {
+    getFormDefinitionJson (item = {}) {
       return item.formDefinitionJson || {}
     },
     closeWindow () {
