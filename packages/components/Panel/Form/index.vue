@@ -68,9 +68,9 @@
         </el-form-item>
       </el-form>
     </div>
-    <form-select-template v-model="dyFormKey"
+    <form-select-template ref="formSelect"
+                          v-model="dyFormKey"
                           title="选择动态表单"
-                          ref="formSelect"
                           :visible.sync="formSelectTemplateVisible"
                           :options="options"
                           @save="handleSelectTemplateSave"
