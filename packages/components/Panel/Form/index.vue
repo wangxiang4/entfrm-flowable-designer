@@ -70,6 +70,7 @@
     </div>
     <form-select-template v-model="dyFormKey"
                           title="选择动态表单"
+                          ref="formSelect"
                           :visible.sync="formSelectTemplateVisible"
                           :options="options"
                           @save="handleSelectTemplateSave"
@@ -109,7 +110,7 @@ export default {
         formKey: '',
         formReadOnly: false
       },
-      queryParams: { type: 1 },
+      queryParams: { 'formDefinitionJson.status': 1 },
       formSelectTemplateVisible: false,
       dyFormKey: '',
       options: []
@@ -168,21 +169,34 @@ export default {
         this.formList = [dyForm]
       }
     },
+    handleDeepFormData (column = [], record = []) {
+      column.forEach(ele => {
+        switch (ele.type) {
+          // 珊瑚布局数据处理
+          case 'coralLayout':
+            ele.cols.forEach(col => { this.handleDeepFormData(col.list, record) })
+            break
+          // 插件数据处理
+          default:
+            record.push({
+              id: ele.prop,
+              name: ele.label,
+              readable: true,
+              writable: true
+            })
+        }
+      })
+    },
     /** 处理选择模板保存 */
     handleSelectTemplateSave (form) {
       const dyForm = lodash.create({})
       lodash.set(dyForm, 'name', form.name)
-      lodash.set(dyForm, 'version', form.version)
-      lodash.set(dyForm, 'formKey', form.code)
-      const dynamicForm = eval('(' + form.data + ')') || {}
-      const dynamicFormField = (dynamicForm.column || []).map(item => {
-        const formProperty = lodash.create({})
-        lodash.set(formProperty, 'id', item.prop)
-        lodash.set(formProperty, 'name', item.label)
-        lodash.set(formProperty, 'readable', true)
-        lodash.set(formProperty, 'writable', true)
-        return formProperty
-      })
+      lodash.set(dyForm, 'version', this.$refs.formSelect.getFormDefinitionJson(form).version)
+      lodash.set(dyForm, 'formKey', this.$refs.formSelect.getFormDefinitionJson(form).id)
+      const formJson = this.$refs.formSelect.getFormDefinitionJson(form).json
+      const dynamicForm = eval('(' + formJson + ')') || {}
+      const dynamicFormField = []
+      this.handleDeepFormData(dynamicForm.column, dynamicFormField)
       lodash.set(dyForm, 'dynamicFormField', dynamicFormField)
       this.formList = [dyForm]
       this.handleMakeXml()

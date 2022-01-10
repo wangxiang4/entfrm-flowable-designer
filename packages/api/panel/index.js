@@ -47,7 +47,7 @@ export function getDept (deptId) {
 // 查询表单管理列表
 export function listForm (query) {
   return requestDecorator(globalConfig.axiosInstance({
-    url: '/toolkit/form/list',
+    url: '/workflow/extension/formDefinition/list',
     method: 'get',
     params: query
   }))

@@ -17,9 +17,9 @@
                      style="width: 100%;"
           >
             <el-option v-for="item in options"
-                       :key="item.code"
-                       :label="item.name"
-                       :value="item.code"
+                       :key="getFormDefinitionJson(item).id"
+                       :label="`${item.name} V:${getFormDefinitionJson(item).version}`"
+                       :value="getFormDefinitionJson(item).id"
             />
           </el-select>
         </el-form-item>
@@ -63,12 +63,15 @@ export default {
     }
   },
   methods: {
+    getFormDefinitionJson (item) {
+      return item.formDefinitionJson || {}
+    },
     closeWindow () {
       this.formKey = undefined
       this.$refs.FormSelectDialog.hide()
     },
     save () {
-      const form = lodash.find(this.options, item => item.code === this.formKey)
+      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id === this.formKey)
       if (lodash.isEmpty(form)) this.$message.error('检查当前未选择数据,请选择')
       else {
         this.$emit('save', form)
