@@ -55,7 +55,7 @@ export default {
       const opt = {
         activityIds: data.activityIds || [],
         bpmnXml: data.bpmnXml || '',
-        flows: data.bpmnXml || [],
+        flows: data.flows || [],
         // 排除流程面板以及泳道以及一些没必要的类型
         exclude: ['bpmndi:BPMNPlane']
       }
