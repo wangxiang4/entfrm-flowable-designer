@@ -56,7 +56,7 @@
       </el-table>
     </div>
     <div v-show="formType === '2'">
-      <el-form :model="outForm" ref="outForm" label-width="100px" size="small" class="panel-form">
+      <el-form ref="outForm" :model="outForm" label-width="100px" size="small" class="panel-form">
         <el-form-item label="表单地址" prop="formKey" :rules="[{validator: isOutFormPathValidator, trigger:'change'}]">
           <el-input v-model="outForm.formKey" @change="handleUpdateXml"/>
         </el-form-item>
