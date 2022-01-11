@@ -22,7 +22,6 @@
             <el-select v-model="scope.row.field"
                        size="mini"
                        placeholder="请选择"
-                       @focus="handleStartNodeDynamicFormField"
                        @change="handleFormalExpressionBuild"
             >
               <el-option v-for="item in fieldOptions"
@@ -172,15 +171,17 @@ export default {
   methods: {
     /** 当选择的bpmn元素发生变化,刷新数据 */
     flushBpmnElement () {
+      debugger
       this.bpmnBusinessObject = lodash.cloneDeep(this.bpmnElement.businessObject)
       this.bpmnFactory = this.modeler.get('bpmnFactory')
       this.modeling = this.modeler.get('modeling')
       // 下方为查询当前元素内部xml值区域////////////////////////////////
-      this.conditionType = lodash.get(this.bpmnElement.businessObject, '$attrs.flowable:conditionType', '1')
+
       this.processExpression = lodash.get(this.bpmnBusinessObject, 'conditionExpression.body', '')
       // 查询流程流转条件处理数据转换赋值
       const extensionElements = lodash.get(this.bpmnBusinessObject, 'extensionElements.values', [])
       const condition = lodash.filter(extensionElements, item => item.$type === 'flowable:Condition')
+      this.conditionType = lodash.get(this.bpmnElement.businessObject, '$attrs.flowable:conditionType', (() => (condition.length === 0 && this.processExpression) ? '2' : '1')())
       this.conditionList = lodash.map(condition, (item) => {
         const condition = lodash.create({})
         lodash.set(condition, 'field', item.field)
@@ -190,6 +191,7 @@ export default {
         lodash.set(condition, 'sort', item.sort)
         return condition
       })
+      this.handleStartNodeDynamicFormField()
     },
     /** 查询开始节点动态表单字段,可以拿启动时存储在flowable流程中的字段做流转判断 */
     handleStartNodeDynamicFormField () {

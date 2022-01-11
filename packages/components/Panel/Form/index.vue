@@ -56,11 +56,11 @@
       </el-table>
     </div>
     <div v-show="formType === '2'">
-      <el-form :model="outForm" label-width="100px" size="small" class="panel-form">
-        <el-form-item label="表单地址">
+      <el-form :model="outForm" ref="outForm" label-width="100px" size="small" class="panel-form">
+        <el-form-item label="表单地址" prop="formKey" :rules="[{validator: isOutFormPathValidator, trigger:'change'}]">
           <el-input v-model="outForm.formKey" @change="handleUpdateXml"/>
         </el-form-item>
-        <el-form-item label="表单只读">
+        <el-form-item label="表单只读" prop="formReadOnly">
           <el-checkbox v-model="outForm.formReadOnly"
                        :disabled="bpmnBusinessObject.$type === 'bpmn:StartEvent'"
                        @change="handleUpdateXml"
@@ -143,13 +143,13 @@ export default {
       this.modeling = this.modeler.get('modeling')
       // 下方为查询当前元素内部xml值区域////////////////////////////////
       const formKey = lodash.get(this.bpmnBusinessObject, 'formKey', '')
-      this.formType = lodash.get(this.bpmnBusinessObject, 'formType', '1')
+      this.formType = lodash.get(this.bpmnBusinessObject, 'formType', (() => formKey.indexOf('/') >= 0 ? '2' : '1')())
       this.$set(this.outForm, 'formReadOnly', lodash.get(this.bpmnBusinessObject, 'formReadOnly', false))
       // 缓存表单数据,以防意外刷新网页造成静态数据丢失,(获取逻辑:[1:获取外置表单缓存,2:获取动态表单缓存])
       this.$set(this.outForm, 'formKey', this.formType === '2' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'outFormKey') || ''))
       const dyFormKey = this.formType === '1' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey') || '')
       // 查询动态表单数据进行数据格式化处理(格式化成父子嵌套数据)
-      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id === dyFormKey)
+      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id == dyFormKey)
       if (!lodash.isEmpty(form)) {
         const dyForm = lodash.create({})
         lodash.set(dyForm, 'name', form.name)
@@ -161,8 +161,8 @@ export default {
           const formProperty = lodash.create({})
           lodash.set(formProperty, 'id', item['id'])
           lodash.set(formProperty, 'name', item['name'])
-          lodash.set(formProperty, 'readable', item['readable'])
-          lodash.set(formProperty, 'writable', item['writable'])
+          lodash.set(formProperty, 'readable', lodash.get(item, 'readable', true))
+          lodash.set(formProperty, 'writable', lodash.get(item, 'writable', true))
           return formProperty
         })
         lodash.set(dyForm, 'dynamicFormField', dynamicFormField)
@@ -203,34 +203,37 @@ export default {
     },
     /** 处理制作BpmnXml并且更新 */
     handleMakeXml () {
-      const formKey = this.formType === '1'
-        ? lodash.get(this.formList[0], 'formKey', '')
-        : lodash.get(this.outForm, 'formKey', '')
-      const bpmnXmlUpdateObj = lodash.create({}, {
-        formKey: formKey,
-        formType: this.formType,
-        outFormKey: lodash.get(this.outForm, 'formKey', ''),
-        formReadOnly: lodash.get(this.outForm, 'formReadOnly', false)
+      this.$refs['outForm'].validate((valid) => {
+        if (valid || this.formType === '1') {
+          const formKey = this.formType === '1'
+            ? lodash.get(this.formList[0], 'formKey', '')
+            : lodash.get(this.outForm, 'formKey', '')
+          const bpmnXmlUpdateObj = lodash.create({}, {
+            formKey: formKey,
+            formType: this.formType,
+            formReadOnly: lodash.get(this.outForm, 'formReadOnly', false)
+          })
+          // 制作扩展元素->flowable:FormProperty
+          const extensionFormProperty = lodash.map(
+            lodash.get(this.formList[0], 'dynamicFormField', []),
+            (item) => this.bpmnFactory.create('flowable:FormProperty', {
+              id: item.id,
+              name: item.name,
+              readable: item.readable,
+              writable: item.writable
+            }))
+          // 查询其他扩展元素实现合并(更新也需要考虑不能覆盖其他自定义扩展元素)
+          const extensionElements = lodash.get(this.bpmnElement.businessObject, 'extensionElements.values', [])
+          const otherElement = lodash.filter(extensionElements, item => item.$type !== 'flowable:FormProperty')
+          // 创建原生扩展属性对象,实现更新bpmnXml
+          const extensions = this.bpmnFactory.create('bpmn:ExtensionElements', { values: lodash.concat(otherElement, extensionFormProperty) })
+          lodash.set(bpmnXmlUpdateObj, 'extensionElements', extensions)
+          this.modeling.updateProperties(this.bpmnElement, bpmnXmlUpdateObj)
+          // 提交缓存(动态表单key与外置表单key)
+          setLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey', lodash.get(this.formList[0], 'formKey', ''))
+          setLocalStorage(this.bpmnBusinessObject.id + 'outFormKey', lodash.get(this.outForm, 'formKey', ''))
+        }
       })
-      // 制作扩展元素->flowable:FormProperty
-      const extensionFormProperty = lodash.map(
-        lodash.get(this.formList[0], 'dynamicFormField', []),
-        (item) => this.bpmnFactory.create('flowable:FormProperty', {
-          id: item.id,
-          name: item.name,
-          readable: item.readable,
-          writable: item.writable
-        }))
-      // 查询其他扩展元素实现合并(更新也需要考虑不能覆盖其他自定义扩展元素)
-      const extensionElements = lodash.get(this.bpmnElement.businessObject, 'extensionElements.values', [])
-      const otherElement = lodash.filter(extensionElements, item => item.$type !== 'flowable:FormProperty')
-      // 创建原生扩展属性对象,实现更新bpmnXml
-      const extensions = this.bpmnFactory.create('bpmn:ExtensionElements', { values: lodash.concat(otherElement, extensionFormProperty) })
-      lodash.set(bpmnXmlUpdateObj, 'extensionElements', extensions)
-      this.modeling.updateProperties(this.bpmnElement, bpmnXmlUpdateObj)
-      // 提交缓存(动态表单key与外置表单key)
-      setLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey', lodash.get(this.formList[0], 'formKey', ''))
-      setLocalStorage(this.bpmnBusinessObject.id + 'outFormKey', lodash.get(this.outForm, 'formKey', ''))
     },
     /** 处理更新xml */
     handleUpdateXml () {
@@ -254,6 +257,13 @@ export default {
     },
     getFormDefinitionJson (item = {}) {
       return item.formDefinitionJson || {}
+    },
+    isOutFormPathValidator (rule, value, callback) {
+      if (value && value.indexOf('/') < 0) {
+        callback(new Error('请输入正确的表单路径,示例:[/xxx/xxx]!'))
+      } else {
+        callback()
+      }
     },
     /** 每次bpmn元素发生变化,需要清理的脏数据 */
     clearDirtyData () {

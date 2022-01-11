@@ -91,7 +91,8 @@ export default {
       const multiInstance = lodash.get(this.bpmnBusinessObject, 'loopCharacteristics', '')
       if (!lodash.isEmpty(multiInstance)) {
         // 获取计算通过比例率,以及数据转换赋值
-        const rate = lodash.get(this.bpmnElement.businessObject.loopCharacteristics, '$attrs.rate', 1)
+        const completionCondition = lodash.get(multiInstance, 'completionCondition.body', '')
+        const rate = completionCondition.match(/\d+\.\d+/g)[0]
         if (('isSequential' in multiInstance)) {
           this.$set(this.countersign, 'multiInstanceType', 3)
         } else {
@@ -125,7 +126,6 @@ export default {
       const expression = this.bpmnFactory.create('bpmn:FormalExpression', { body: '${nrOfCompletedInstances/nrOfInstances >= ' + variable.proportionalRate + ' }' })
       // 创建多实例对象
       const multiInstance = lodash.create({}, {
-        rate: variable.proportionalRate,
         completionCondition: expression,
         collection: variable.collection,
         elementVariable: variable.elementVariable
