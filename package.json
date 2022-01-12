@@ -4,7 +4,7 @@
     "name": "entfrm开发团队-王翔",
     "email": "1827945911@qq.com"
   },
-  "version": "1.1.7",
+  "version": "1.1.9",
   "main": "lib/entfrm-flowable-designer.umd.min.js",
   "jsdelivr": "lib/entfrm-flowable-designer.umd.min.js",
   "unpkg": "lib/entfrm-flowable-designer.umd.min.js",

@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      formKey: undefined
+      formKey: this.value
     }
   },
   watch: {
@@ -56,7 +56,6 @@ export default {
       }
     },
     value: {
-      immediate: true,
       handler () {
         this.formKey = this.value
       }

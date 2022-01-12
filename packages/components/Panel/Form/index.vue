@@ -112,7 +112,7 @@ export default {
       },
       queryParams: { 'formDefinitionJson.status': 1 },
       formSelectTemplateVisible: false,
-      dyFormKey: '',
+      dyFormKey: undefined,
       options: []
     }
   },
@@ -147,9 +147,9 @@ export default {
       this.$set(this.outForm, 'formReadOnly', lodash.get(this.bpmnBusinessObject, 'formReadOnly', false))
       // 缓存表单数据,以防意外刷新网页造成静态数据丢失,(获取逻辑:[1:获取外置表单缓存,2:获取动态表单缓存])
       this.$set(this.outForm, 'formKey', this.formType === '2' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'outFormKey') || ''))
-      const dyFormKey = this.formType === '1' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey') || '')
+      const dyFormKey = Number(this.formType === '1' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'dyFormKey') || ''))
       // 查询动态表单数据进行数据格式化处理(格式化成父子嵌套数据)
-      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id == dyFormKey)
+      const form = lodash.find(this.options, item => this.getFormDefinitionJson(item).id === dyFormKey)
       if (!lodash.isEmpty(form)) {
         const dyForm = lodash.create({})
         lodash.set(dyForm, 'name', form.name)
@@ -192,7 +192,7 @@ export default {
       const dyForm = lodash.create({})
       lodash.set(dyForm, 'name', form.name)
       lodash.set(dyForm, 'version', this.getFormDefinitionJson(form).version)
-      lodash.set(dyForm, 'formKey', this.getFormDefinitionJson(form).id)
+      lodash.set(dyForm, 'formKey', Number(this.getFormDefinitionJson(form).id))
       const formJson = this.getFormDefinitionJson(form).json
       const dynamicForm = eval('(' + formJson + ')') || {}
       const dynamicFormField = []
@@ -241,7 +241,7 @@ export default {
     },
     /** 处理动态表单更新 */
     handleUpdateForm () {
-      this.dyFormKey = lodash.get(this.formList[0], 'formKey', '')
+      this.dyFormKey = lodash.get(this.formList[0], 'formKey')
       this.formSelectTemplateVisible = true
     },
     /** 处理动态表单删除 */

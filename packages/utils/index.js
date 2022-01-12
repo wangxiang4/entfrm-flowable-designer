@@ -56,3 +56,27 @@ export function requestDecorator (request) {
       return Promise.reject('没有发现第三方axios依赖,请检查')
     })()
 }
+
+/** 判断是否为空 */
+export function validateNull (val) {
+  if (val && parseInt(val) === 0) return false
+  if (val instanceof Date || typeof val === 'boolean' || typeof val === 'number') return false
+  if (val instanceof Array) {
+    if (val.length === 0) return true
+  } else if (val instanceof Object) {
+    for (const o in val) return false
+    return true
+  } else {
+    if (
+      val === 'null' ||
+      val == null ||
+      val === 'undefined' ||
+      val === undefined ||
+      val === ''
+    ) {
+      return true
+    }
+    return false
+  }
+  return false
+}

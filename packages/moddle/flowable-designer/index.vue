@@ -34,6 +34,7 @@ import FlowableHeader from '@components/Header'
 import flowableDescriptor from '@/common/config/flowable'
 import FlowablePanel from '@components/Panel'
 import lodash from 'lodash'
+import { validateNull } from '@utils'
 import { activityExtensionDataSave, activityExtensionPropertySave, deployModel, addModel, editModel } from '@/api/flowable-designer'
 
 export default {
@@ -274,7 +275,7 @@ export default {
         const formKey = lodash.get(bpmnElement, 'formKey')
         switch (bpmnType) {
           case 'bpmn:StartEvent':
-            if (lodash.isEmpty(formKey)) {
+            if (validateNull(formKey)) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
             }
             break
@@ -285,7 +286,7 @@ export default {
             if (!button.length) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置按钮。</p>`)
             }
-            if (lodash.isEmpty(formKey)) {
+            if (validateNull(formKey)) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
             }
             break
