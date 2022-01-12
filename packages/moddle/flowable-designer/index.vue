@@ -271,10 +271,10 @@ export default {
           })
         }
         // ------------------制定校验规则--------------------
-        const formProperty = values.filter(element => element.$type == 'flowable:FormProperty')
+        const formKey = lodash.get(bpmnElement, 'formKey')
         switch (bpmnType) {
           case 'bpmn:StartEvent':
-            if (!formProperty.length && !bpmnElement.outFormKey) {
+            if (lodash.isEmpty(formKey)) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
             }
             break
@@ -285,7 +285,7 @@ export default {
             if (!button.length) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置按钮。</p>`)
             }
-            if (!formProperty.length && !bpmnElement.outFormKey) {
+            if (lodash.isEmpty(formKey)) {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
             }
             break
@@ -357,7 +357,6 @@ export default {
         }).then(response => {
           this.modelData = response
           const chain = []
-          code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
           const activityExtensionProperty = []
           const activityExtensionData = []
           const validateErrorData = []
@@ -375,6 +374,7 @@ export default {
             }
           })
           chain.push(validateErrorData)
+          code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
           chain.push(activityExtensionPropertySave(activityExtensionProperty))
           chain.push(activityExtensionDataSave(activityExtensionData))
           return Promise.all(chain)
@@ -388,7 +388,7 @@ export default {
           type: 'warning',
           dangerouslyUseHTMLString: true
         })
-        this.$message.success('保存流程模型成功!')
+        this.$message.success(results[1].data || '保存流程模型成功!')
         this.$emit('refresh')
         this.loading = false
       }).catch(err => {
