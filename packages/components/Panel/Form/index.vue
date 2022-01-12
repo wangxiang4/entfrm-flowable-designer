@@ -143,7 +143,7 @@ export default {
       this.modeling = this.modeler.get('modeling')
       // 下方为查询当前元素内部xml值区域////////////////////////////////
       const formKey = lodash.get(this.bpmnBusinessObject, 'formKey', '')
-      this.formType = lodash.get(this.bpmnBusinessObject, 'formType', (() => formKey.indexOf('/') >= 0 ? '2' : '1')())
+      this.formType = lodash.get(this.bpmnBusinessObject, 'formType', (() => (/^\/[\w\W]+$/.test(formKey)) ? '2' : '1')())
       this.$set(this.outForm, 'formReadOnly', lodash.get(this.bpmnBusinessObject, 'formReadOnly', false))
       // 缓存表单数据,以防意外刷新网页造成静态数据丢失,(获取逻辑:[1:获取外置表单缓存,2:获取动态表单缓存])
       this.$set(this.outForm, 'formKey', this.formType === '2' ? formKey : (getLocalStorage(this.bpmnBusinessObject.id + 'outFormKey') || ''))
@@ -259,7 +259,7 @@ export default {
       return item.formDefinitionJson || {}
     },
     isOutFormPathValidator (rule, value, callback) {
-      if (value && value.indexOf('/') < 0) {
+      if (!(/^\/[\w\W]+$/.test(value))) {
         callback(new Error('请输入正确的表单路径,示例:[/xxx/xxx]!'))
       } else {
         callback()
