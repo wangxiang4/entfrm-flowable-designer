@@ -13,29 +13,9 @@ import NavigatedViewer from 'entfrm-bpmn/lib/NavigatedViewer'
 import globalConfig from '@/common/config/global'
 export default {
   name: 'FlowableChart',
-  props: {
-    options: {
-      type: Object,
-      default: () => {
-        return {
-          activityIds: [],
-          bpmnXml: '',
-          flows: []
-        }
-      }
-    }
-  },
   data () {
     return {
       navigatedViewer: undefined
-    }
-  },
-  watch: {
-    options: {
-      handler (data) {
-        this.setHighlightImportDiagram(data)
-      },
-      deep: true
     }
   },
   mounted () {
@@ -51,7 +31,6 @@ export default {
           zoomScroll: ['value', '']
         }]
       })
-      this.setHighlightImportDiagram(this.options)
     },
     /** 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件 */
     setHighlightImportDiagram (data = {}) {
