@@ -115,7 +115,7 @@ export default {
     handleMakeXml () {
       // 多实例变量定义
       const variable = lodash.create({}, {
-        collection: '${mutiInstanceHandler.getList(execution)}',
+        collection: '${multiInstanceHandler.getList(execution)}',
         elementVariable: 'assignee',
         // 计算通过比例率
         proportionalRate: lodash.multiply(this.countersign.completionRate, 0.01)
