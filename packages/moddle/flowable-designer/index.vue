@@ -312,6 +312,12 @@ export default {
         if (this.bpmnModeler) {
           const definitions = this.bpmnModeler.getDefinitions()
           const rootElements = lodash.get(definitions, 'rootElements', [])
+          // 检测画布流程名称不能为空
+          const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
+          const canvasProcess = lodash.get(canvasRootElement, 'businessObject', {})
+          if (validateNull(canvasProcess.name)) {
+            return reject('检测到主体画布流程名称为空,请检查,这个为必填项!')
+          }
           // 检测协助池中的一些非空校验
           const collaboration = rootElements.find(item => item.$type == 'bpmn:Collaboration')
           if (collaboration) {
@@ -340,43 +346,50 @@ export default {
           }
           // 处理一些需要初始化的值
           this.loading = true
-          resolve(rootElements)
+          resolve(rootElements, canvasProcess)
         } else reject('bpmn建模对象不存在,请检查!')
-      }).then(rootElements => {
+      }).then(({ rootElements, canvasProcess }) => {
         // todo:第二层处理流程模型新增
-        // 获取根流程业务对象,需要考虑支持泳道的逻辑
-        const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
-        const process = lodash.get(canvasRootElement, 'businessObject', {})
-        if (validateNull(process.name)) {
-          return Promise.reject('检测到主体流程名称为空,请检查,这个为必填项!')
+        const processRelationIds = []
+        const collaboration = rootElements.find(item => item.$type == 'bpmn:Collaboration')
+        if (collaboration) {
+          const participants = lodash.get(collaboration, 'participants', [])
+          for (let i = 0; i < participants.length; ++i) {
+            const participant = participants[i]
+            const process = lodash.get(participant, 'processRef', {})
+            processRelationIds.push(String(process.id).replaceAll(',', ''))
+          }
+        } else {
+          const process = lodash.get(rootElements, '[0]', {})
+          processRelationIds.push(String(process.id).replaceAll(',', ''))
         }
         return new Promise((resolve, reject) => {
           if (this.modelData.id == undefined) {
             addModel({
-              key: process.id,
-              name: process.name,
+              key: processRelationIds.join(),
+              name: canvasProcess.name,
               modelType: 0,
               description: ''
             }).then(response => {
               this.modelData = response
-              resolve({ rootElements, process })
+              resolve({ rootElements, canvasProcess, processRelationIds })
             }).catch(() => {
               reject('保存流程模型失败!')
             })
-          } else resolve({ rootElements, process })
+          } else resolve({ rootElements, canvasProcess, processRelationIds })
         })
-      }).then(({ rootElements, process }) => {
+      }).then(({ rootElements, canvasProcess, processRelationIds }) => {
         // todo:第三层处理bpmnXml
         return this.bpmnModeler.saveXML({
           format: true
         }).then(result => {
-          return Promise.resolve({ rootElements, process, result })
+          return Promise.resolve({ rootElements, canvasProcess, processRelationIds, result })
         })
-      }).then(({ rootElements, process, result }) => {
+      }).then(({ rootElements, canvasProcess, processRelationIds, result }) => {
         // todo:第四层处理流程模型修改
         return editModel(this.modelData.id, {
-          key: process.id,
-          name: process.name,
+          key: processRelationIds.join(),
+          name: canvasProcess.name,
           json_xml: result.xml,
           // 这个字段为后期版本冲突功能做准备
           newversion: false,
