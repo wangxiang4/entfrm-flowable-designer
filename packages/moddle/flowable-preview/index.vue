@@ -32,9 +32,9 @@ export default {
     /** 处理采用高亮涂抹图表颜色的方式导入bpmnXml文件 */
     setHighlightImportDiagram (data = {}) {
       const opt = {
-        activityIds: data.activityIds || [],
         bpmnXml: data.bpmnXml || '',
-        flows: data.flows || [],
+        activityIds: data.activityIds || [],
+        runActivityIds: data.runActivityIds || [],
         // 排除流程面板以及泳道以及一些没必要的类型
         exclude: ['bpmndi:BPMNPlane']
       }
@@ -44,18 +44,17 @@ export default {
         const references = result.references
         // 获取Di图像元素,进行设置颜色
         const bpmnDiElement = references.filter(e => e.property === 'bpmndi:bpmnElement')
-        const runActivity = opt.activityIds.pop()
         bpmnDiElement.forEach(item => {
           const referenceId = item.id
           // 涂抹正在运行颜色
-          if (referenceId === runActivity) {
+          if (opt.runActivityIds.includes(referenceId)) {
             const element = item.element
             element && Object.assign(element, {
               'fill': globalConfig.runFillColor,
               'stroke': globalConfig.runStrokeColor
             })
             // 涂抹已完成颜色
-          } else if (opt.activityIds.includes(referenceId) || opt.flows.includes(referenceId)) {
+          } else if (opt.activityIds.includes(referenceId)) {
             const element = item.element
             element && Object.assign(element, {
               'fill': globalConfig.doneFillColor,
