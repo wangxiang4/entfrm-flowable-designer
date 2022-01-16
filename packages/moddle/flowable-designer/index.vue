@@ -215,7 +215,7 @@ export default {
         modelType: undefined
       }
     },
-    /** 处理模型流程 */
+    /** 处理模型流程交互转换 */
     handleModelProcess (opts) {
       const options = {
         flowElements: opts.flowElements || [],
@@ -312,14 +312,35 @@ export default {
         if (this.bpmnModeler) {
           const definitions = this.bpmnModeler.getDefinitions()
           const rootElements = lodash.get(definitions, 'rootElements', [])
-          if (rootElements.every(element => {
-            const flowElements = lodash.get(element, 'flowElements', [])
-            return element.$type == 'bpmn:Collaboration' || flowElements.length
-          })) {
-            // 处理一些需要初始化的值
-            this.loading = true
-            resolve(rootElements)
-          } else reject('请设计bpmn流程,没有检测到bpmn元素!')
+          // 检测协助池中的一些非空校验
+          const collaboration = rootElements.find(item => item.$type == 'bpmn:Collaboration')
+          if (collaboration) {
+            const participants = lodash.get(collaboration, 'participants', [])
+            for (let i = 0; i < participants.length; ++i) {
+              const participant = participants[i]
+              const process = lodash.get(participant, 'processRef', {})
+              // 检测池中的泳道不能为空
+              const lanes = lodash.get(process, 'laneSets[0].lanes', [])
+              if (lanes.length == 0) {
+                return reject(`池子【${participant.name || participant.id}】没有配置泳道,请检测!`)
+              }
+              // 检测池中的bpmn元素不能为空
+              const flowElements = lodash.get(process, 'flowElements', [])
+              if (flowElements.length == 0) {
+                return reject(`池子【${participant.name || participant.id}】没有配置bpmn元素,请设计bpmn流程!`)
+              }
+            }
+          // 检测正常单流程的一些非空校验
+          } else {
+            const process = lodash.get(rootElements, '[0]', {})
+            const flowElements = lodash.get(process, 'flowElements', [])
+            if (flowElements.length == 0) {
+              return reject(`流程【${process.name || process.id}】没有配置bpmn元素,请设计bpmn流程!`)
+            }
+          }
+          // 处理一些需要初始化的值
+          this.loading = true
+          resolve(rootElements)
         } else reject('bpmn建模对象不存在,请检查!')
       }).then(rootElements => {
         // todo:第二层处理流程模型新增
@@ -327,7 +348,7 @@ export default {
         const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
         const headElement = lodash.get(canvasRootElement, 'businessObject', {})
         if (validateNull(headElement.name)) {
-          return Promise.reject('没有检测到流程名称,请检查!')
+          return Promise.reject('没有检测到流程定义名称,请检查,这个为必填项!')
         }
         return new Promise((resolve, reject) => {
           if (this.modelData.id == undefined) {
@@ -367,21 +388,46 @@ export default {
           const chain = []
           const activityExtensionProperty = []
           const activityExtensionData = []
-          const validateErrorData = []
-          lodash.forEach(rootElements, item => {
-            // 需要考虑泳道部分逻辑
-            if (item.$type == 'bpmn:Process') {
-              // 处理泳道多个流程
-              const flowElements = lodash.get(item, 'flowElements', [])
+          let validateErrorData = []
+          // 查找并存储扩展属性跟扩展数据,方便后台拿取做对应功能需求
+          const collaboration = rootElements.find(item => item.$type == 'bpmn:Collaboration')
+          // 处理协助池
+          if (collaboration) {
+            const participants = lodash.get(collaboration, 'participants', [])
+            for (let i = 0; i < participants.length; ++i) {
+              const participant = participants[i]
+              const process = lodash.get(participant, 'processRef', {})
+              const flowElements = lodash.get(process, 'flowElements', [])
+              const tempValidateErrorData = []
               this.handleModelProcess({
                 flowElements,
                 headElement,
                 activityExtensionProperty,
                 activityExtensionData,
-                validateErrorData
+                validateErrorData: tempValidateErrorData
               })
+              if (tempValidateErrorData.length > 0) {
+                validateErrorData = validateErrorData.concat(
+                  [`<p>池子【${participant.name || participant.id}】:</p>`], tempValidateErrorData)
+              }
             }
-          })
+          // 处理正常单流程
+          } else {
+            const process = lodash.get(rootElements, '[0]', {})
+            const flowElements = lodash.get(process, 'flowElements', [])
+            const tempValidateErrorData = []
+            this.handleModelProcess({
+              flowElements,
+              headElement,
+              activityExtensionProperty,
+              activityExtensionData,
+              validateErrorData: tempValidateErrorData
+            })
+            if (tempValidateErrorData.length > 0) {
+              validateErrorData = validateErrorData.concat(
+                [`<p>流程【${process.name || process.id}】:</p>`], tempValidateErrorData)
+            }
+          }
           chain.push(validateErrorData)
           code === 1 && chain.push(deployModel({ id: response.id, category: '未分类' }))
           chain.push(activityExtensionPropertySave(activityExtensionProperty))
