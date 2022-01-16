@@ -32,7 +32,7 @@
       </el-form>
       <el-table v-loading="loading"
                 size="small"
-                height="calc(100vh - 400px)"
+                height="calc(100vh - 350px)"
                 :data="expressionList"
                 highlight-current-row
                 @current-change="handleCurrentChange"

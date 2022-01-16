@@ -60,7 +60,7 @@
             <el-table ref="userTable"
                       v-loading="loading"
                       size="small"
-                      height="calc(100vh - 400px)"
+                      height="calc(100vh - 345px)"
                       :data="userList"
                       @select="handleTags"
                       @select-all="handleTags"

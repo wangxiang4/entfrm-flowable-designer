@@ -219,7 +219,7 @@ export default {
     handleModelProcess (opts) {
       const options = {
         flowElements: opts.flowElements || [],
-        headElement: opts.headElement || {},
+        process: opts.process || {},
         activityExtensionProperty: opts.activityExtensionProperty || [],
         activityExtensionData: opts.activityExtensionData || [],
         validateErrorData: opts.validateErrorData || []
@@ -235,7 +235,7 @@ export default {
         if (bpmnElementKeys.includes('formType')) {
           options.activityExtensionProperty.push({
             key: 'formType',
-            processDefId: options.headElement.id,
+            processDefId: options.process.id,
             activityDefId: bpmnElement.id,
             value: bpmnElement.formType
           })
@@ -243,7 +243,7 @@ export default {
         if (bpmnElementKeys.includes('formReadOnly')) {
           options.activityExtensionProperty.push({
             key: 'formReadOnly',
-            processDefId: options.headElement.id,
+            processDefId: options.process.id,
             activityDefId: bpmnElement.id,
             value: bpmnElement.formReadOnly
           })
@@ -251,7 +251,7 @@ export default {
         if (conditionType != undefined) {
           options.activityExtensionProperty.push({
             key: 'conditionType',
-            processDefId: options.headElement.id,
+            processDefId: options.process.id,
             activityDefId: bpmnElement.id,
             value: conditionType
           })
@@ -267,7 +267,7 @@ export default {
         if ((assignee.length + button.length + condition.length) > 0) {
           options.activityExtensionData.push({
             activityDefId: bpmnElement.id,
-            processDefId: options.headElement.id,
+            processDefId: options.process.id,
             workflowAssigneeList: assignee,
             workflowButtonList: button,
             workflowConditionList: condition
@@ -297,7 +297,7 @@ export default {
           const flowElements = lodash.get(bpmnElement, 'flowElements', [])
           this.handleModelProcess({
             flowElements,
-            headElement: options.headElement,
+            process: options.process,
             activityExtensionProperty: options.activityExtensionProperty,
             activityExtensionData: options.activityExtensionData,
             validateErrorData: options.validateErrorData || []
@@ -346,37 +346,37 @@ export default {
         // todo:第二层处理流程模型新增
         // 获取根流程业务对象,需要考虑支持泳道的逻辑
         const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
-        const headElement = lodash.get(canvasRootElement, 'businessObject', {})
-        if (validateNull(headElement.name)) {
+        const process = lodash.get(canvasRootElement, 'businessObject', {})
+        if (validateNull(process.name)) {
           return Promise.reject('没有检测到流程定义名称,请检查,这个为必填项!')
         }
         return new Promise((resolve, reject) => {
           if (this.modelData.id == undefined) {
             addModel({
-              key: headElement.id,
-              name: headElement.name,
+              key: process.id,
+              name: process.name,
               modelType: 0,
               description: ''
             }).then(response => {
               this.modelData = response
-              resolve({ headElement, rootElements })
+              resolve({ rootElements, process })
             }).catch(() => {
               reject('保存流程模型失败!')
             })
-          } else resolve({ rootElements, headElement })
+          } else resolve({ rootElements, process })
         })
-      }).then(({ rootElements, headElement }) => {
+      }).then(({ rootElements, process }) => {
         // todo:第三层处理bpmnXml
         return this.bpmnModeler.saveXML({
           format: true
         }).then(result => {
-          return Promise.resolve({ rootElements, headElement, result })
+          return Promise.resolve({ rootElements, process, result })
         })
-      }).then(({ rootElements, headElement, result }) => {
+      }).then(({ rootElements, process, result }) => {
         // todo:第四层处理流程模型修改
         return editModel(this.modelData.id, {
-          key: headElement.id,
-          name: headElement.name,
+          key: process.id,
+          name: process.name,
           json_xml: result.xml,
           // 这个字段为后期版本冲突功能做准备
           newversion: false,
@@ -401,7 +401,7 @@ export default {
               const tempValidateErrorData = []
               this.handleModelProcess({
                 flowElements,
-                headElement,
+                process,
                 activityExtensionProperty,
                 activityExtensionData,
                 validateErrorData: tempValidateErrorData
@@ -418,7 +418,7 @@ export default {
             const tempValidateErrorData = []
             this.handleModelProcess({
               flowElements,
-              headElement,
+              process,
               activityExtensionProperty,
               activityExtensionData,
               validateErrorData: tempValidateErrorData

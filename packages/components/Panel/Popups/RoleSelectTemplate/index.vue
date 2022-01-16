@@ -37,7 +37,7 @@
           <el-table ref="roleTable"
                     v-loading="loading"
                     size="small"
-                    height="calc(100vh - 430px)"
+                    height="calc(100vh - 350px)"
                     :data="roleList"
                     @select="handleTags"
                     @select-all="handleTags"

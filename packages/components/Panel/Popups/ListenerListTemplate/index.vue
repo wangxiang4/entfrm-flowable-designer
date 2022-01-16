@@ -12,7 +12,7 @@
     >
       <el-table ref="listenerTable"
                 v-loading="loading"
-                height="calc(100vh - 350px)"
+                height="calc(100vh - 300px)"
                 size="small"
                 border
                 :data="listenerList"
