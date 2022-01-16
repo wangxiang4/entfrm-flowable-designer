@@ -348,7 +348,7 @@ export default {
         const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
         const process = lodash.get(canvasRootElement, 'businessObject', {})
         if (validateNull(process.name)) {
-          return Promise.reject('没有检测到主体流程名称,请检查,这个为必填项!')
+          return Promise.reject('检测到主体流程名称为空,请检查,这个为必填项!')
         }
         return new Promise((resolve, reject) => {
           if (this.modelData.id == undefined) {
