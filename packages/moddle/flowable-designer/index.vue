@@ -346,7 +346,7 @@ export default {
           }
           // 处理一些需要初始化的值
           this.loading = true
-          resolve(rootElements, canvasProcess)
+          resolve({ rootElements, canvasProcess })
         } else reject('bpmn建模对象不存在,请检查!')
       }).then(({ rootElements, canvasProcess }) => {
         // todo:第二层处理流程模型新增
