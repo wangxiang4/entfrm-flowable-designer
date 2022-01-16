@@ -15,7 +15,7 @@
                   @change="handleUpdateXml"
         />
       </el-form-item>
-      <template v-if="bpmnBusinessObject.$type === 'bpmn:StartEvent'">
+      <template v-if="bpmnBusinessObject.$type === 'bpmn:StartEvent' && bpmnElementParent.$type != 'bpmn:SubProcess'">
         <el-form-item label="流程发起人">
           <el-input :disabled="true" :value="bpmnBusinessObject.initiator"/>
         </el-form-item>
@@ -49,6 +49,11 @@ export default {
         name: '',
         documentation: ''
       }
+    }
+  },
+  computed: {
+    bpmnElementParent () {
+      return this.bpmnElement.businessObject.$parent || {}
     }
   },
   watch: {

@@ -219,6 +219,7 @@ export default {
     handleModelProcess (opts) {
       const options = {
         flowElements: opts.flowElements || [],
+        headElement: opts.headElement || {},
         activityExtensionProperty: opts.activityExtensionProperty || [],
         activityExtensionData: opts.activityExtensionData || [],
         validateErrorData: opts.validateErrorData || []
@@ -229,19 +230,20 @@ export default {
         const extensionElements = lodash.get(bpmnElement, 'extensionElements', {})
         const conditionType = lodash.get(bpmnElement, '$attrs.flowable:conditionType')
         const bpmnType = lodash.get(bpmnElement, '$type', '')
+        const bpmnElementKeys = Object.keys(bpmnElement)
         // ----------------扩展活动属性存储------------------
-        if (bpmnElement.formType != undefined) {
+        if (bpmnElementKeys.includes('formType')) {
           options.activityExtensionProperty.push({
             key: 'formType',
-            processDefId: bpmnElementParent.id,
+            processDefId: options.headElement.id,
             activityDefId: bpmnElement.id,
             value: bpmnElement.formType
           })
         }
-        if (bpmnElement.formReadOnly != undefined) {
+        if (bpmnElementKeys.includes('formReadOnly')) {
           options.activityExtensionProperty.push({
             key: 'formReadOnly',
-            processDefId: bpmnElementParent.id,
+            processDefId: options.headElement.id,
             activityDefId: bpmnElement.id,
             value: bpmnElement.formReadOnly
           })
@@ -249,7 +251,7 @@ export default {
         if (conditionType != undefined) {
           options.activityExtensionProperty.push({
             key: 'conditionType',
-            processDefId: bpmnElementParent.id,
+            processDefId: options.headElement.id,
             activityDefId: bpmnElement.id,
             value: conditionType
           })
@@ -265,7 +267,7 @@ export default {
         if ((assignee.length + button.length + condition.length) > 0) {
           options.activityExtensionData.push({
             activityDefId: bpmnElement.id,
-            processDefId: bpmnElementParent.id,
+            processDefId: options.headElement.id,
             workflowAssigneeList: assignee,
             workflowButtonList: button,
             workflowConditionList: condition
@@ -275,7 +277,7 @@ export default {
         const formKey = lodash.get(bpmnElement, 'formKey')
         switch (bpmnType) {
           case 'bpmn:StartEvent':
-            if (validateNull(formKey)) {
+            if (validateNull(formKey) && bpmnElementParent.$type != 'bpmn:SubProcess') {
               options.validateErrorData.push(`<p>节点【${bpmnElement.name || bpmnElement.id}】没有配置表单。</p>`)
             }
             break
@@ -295,8 +297,10 @@ export default {
           const flowElements = lodash.get(bpmnElement, 'flowElements', [])
           this.handleModelProcess({
             flowElements,
+            headElement: options.headElement,
             activityExtensionProperty: options.activityExtensionProperty,
-            activityExtensionData: options.activityExtensionData
+            activityExtensionData: options.activityExtensionData,
+            validateErrorData: options.validateErrorData || []
           })
         }
       }
@@ -368,6 +372,7 @@ export default {
               const flowElements = lodash.get(item, 'flowElements', [])
               this.handleModelProcess({
                 flowElements,
+                headElement,
                 activityExtensionProperty,
                 activityExtensionData,
                 validateErrorData
