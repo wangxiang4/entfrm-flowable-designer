@@ -27,7 +27,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   // token
-  // config.headers['Authorization'] = 'Bearer ' + '0ff19ec6-1f6b-42fd-83fc-9b6e28d4f46c'
+  config.headers['Authorization'] = 'Bearer ' + 'eb51a97e-5b9e-45d8-ab8c-3cd8415aaaf4'
   // 配置url拼接参数格式处理
   const type = config.method
   const arrayFormat = config.headers.arrayFormat || 'indices'

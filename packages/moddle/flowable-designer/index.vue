@@ -326,6 +326,9 @@ export default {
         // 获取根流程业务对象,需要考虑支持泳道的逻辑
         const canvasRootElement = this.bpmnModeler.get('canvas').getRootElement()
         const headElement = lodash.get(canvasRootElement, 'businessObject', {})
+        if (validateNull(headElement.name)) {
+          return Promise.reject('没有检测到流程名称,请检查!')
+        }
         return new Promise((resolve, reject) => {
           if (this.modelData.id == undefined) {
             addModel({
